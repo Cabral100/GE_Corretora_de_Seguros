@@ -1,0 +1,11 @@
+{
+  "name": "ge-corretora-de-seguros-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npx serve . -l 4173",
+    "check": "node scripts/validate.mjs"
+  }
+}
+
