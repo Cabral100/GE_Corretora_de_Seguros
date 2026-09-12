@@ -10,9 +10,9 @@
     <meta name="theme-color" content="#101c4e" />
     <meta name="color-scheme" content="light" />
     <link rel="canonical" href="https://gecorretoradeseguros.com.br" />
-    <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png" />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
@@ -27,20 +27,55 @@
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="G.E. Corretora de Seguros, proteção sob medida" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="G.E. Corretora de Seguros" />
-    <meta name="twitter:description" content="Seguros e planos de saúde com atendimento próximo, claro e personalizado." />
-    <meta name="twitter:image" content="https://gecorretoradeseguros.com.br/assets/og-cover.png" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="enhancements.css" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@graph": [
           {
-            "@type": "Organization",
+            "@type": ["InsuranceAgency", "ProfessionalService"],
             "@id": "https://gecorretoradeseguros.com.br/#organization",
             "name": "G.E. Corretora de Seguros",
             "url": "https://gecorretoradeseguros.com.br",
-            "logo": "https://gecorretoradeseguros.com.br/assets/ge-corretora-logo.jpg"
+            "logo": "https://gecorretoradeseguros.com.br/assets/ge-corretora-logo.jpg",
+            "description": "Corretora de seguros e planos de saúde com atendimento personalizado em Mogi das Cruzes e Alto Tietê.",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Av. Ver. Narciso Yague Guimarães, 1000 - Vila Partenio",
+              "addressLocality": "Mogi das Cruzes",
+              "addressRegion": "SP",
+              "postalCode": "08780-200",
+              "addressCountry": "BR"
+            },
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "09:00",
+                "closes": "12:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "13:00",
+                "closes": "17:30"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "09:00",
+                "closes": "12:00"
+              },
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": "Saturday",
+                "opens": "13:00",
+                "closes": "16:00"
+              }
+            ],
+            "areaServed": ["Mogi das Cruzes", "Alto Tietê", "Brasil"],
+            "serviceType": ["Corretagem de seguros", "Planos de saúde"]
           },
           {
             "@type": "WebSite",
@@ -51,22 +86,12 @@
             "publisher": { "@id": "https://gecorretoradeseguros.com.br/#organization" }
           },
           {
-            "@type": "ProfessionalService",
-            "@id": "https://gecorretoradeseguros.com.br/#service",
-            "name": "G.E. Corretora de Seguros",
-            "url": "https://gecorretoradeseguros.com.br",
-            "description": "Corretora de seguros e planos de saúde com atendimento personalizado em Mogi das Cruzes e Alto Tietê.",
-            "areaServed": ["Mogi das Cruzes", "Alto Tietê", "Brasil"],
-            "serviceType": ["Corretagem de seguros", "Planos de saúde"],
-            "provider": { "@id": "https://gecorretoradeseguros.com.br/#organization" }
-          },
-          {
             "@type": "FAQPage",
             "mainEntity": [
               {
                 "@type": "Question",
                 "name": "A cotação tem custo?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Não. A análise inicial e a cotação são feitas sem custo, de acordo com o seu perfil e a disponibilidade das seguradoras." }
+                "acceptedAnswer": { "@type": "Answer", "text": "Não. A análise inicial e a cotação são feitas sem custo, de acordo com o perfil e a disponibilidade das seguradoras." }
               },
               {
                 "@type": "Question",
@@ -90,18 +115,18 @@
     <header class="site-header" data-header>
       <div class="header-inner">
         <a class="brand" href="#home" aria-label="G.E. Corretora de Seguros, início">
-          <img src="/assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
+          <img src="assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
         </a>
 
         <nav class="main-nav" id="main-nav" aria-label="Navegação principal" data-nav>
           <div class="mobile-nav-brand">
-            <img src="/assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
+            <img src="assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
             <span>Menu principal</span>
           </div>
           <div class="nav-links">
             <a href="#home">Home</a>
-            <a href="#sobre">Sobre nós</a>
             <a href="#seguros">Seguros</a>
+            <a href="#sobre">Sobre nós</a>
             <a href="#saude">Plano de saúde</a>
             <a href="#contato">Contato</a>
           </div>
@@ -118,84 +143,82 @@
 
     <main id="conteudo">
       <section class="opening" id="home" aria-labelledby="opening-title">
-        <div class="opening-grid">
+        <div class="hero-stage">
+          <div class="hero-orbit" aria-hidden="true">
+            <div class="hero-logo hero-logo-porto"><img src="assets/partners/porto.svg" alt="" /></div>
+            <div class="hero-logo hero-logo-allianz"><img src="assets/partners/allianz.svg" alt="" /></div>
+            <div class="hero-logo hero-logo-bradesco"><img src="assets/partners/bradesco-seguros.png" alt="" /></div>
+            <div class="hero-logo hero-logo-suhai"><img src="assets/partners/suhai.svg" alt="" /></div>
+            <div class="hero-logo hero-logo-tokio"><img src="assets/partners/tokio.png" alt="" /></div>
+            <div class="hero-logo hero-logo-mapfre"><img src="assets/partners/mapfre.png" alt="" /></div>
+            <div class="hero-logo hero-logo-hdi"><img src="assets/partners/hdi-seguros.png" alt="" /></div>
+            <div class="hero-logo hero-logo-azul"><img src="assets/partners/azul.svg" alt="" /></div>
+          </div>
           <div class="opening-copy" data-reveal>
-            <p class="section-kicker">Proteção feita com escuta</p>
-            <h1 id="opening-title">Segurança para o que realmente importa.</h1>
-            <p class="opening-lead">A G.E. compara possibilidades e orienta sua escolha de seguro ou plano de saúde com clareza, proximidade e atendimento humano.</p>
+            <h1 id="opening-title">Segurança para o que realmente importa</h1>
             <div class="opening-actions">
               <button class="primary-cta" type="button" data-open-lead>Quero uma cotação</button>
               <a class="text-link" href="#seguros">Conhecer seguros</a>
             </div>
           </div>
-
-          <div class="opening-brand" data-reveal data-reveal-delay="1">
-            <div class="opening-logo-frame">
-              <img src="/assets/ge-corretora-logo.jpg" alt="Logo da G.E. Corretora de Seguros" width="708" height="384" fetchpriority="high" />
-            </div>
-            <div class="opening-facts">
-              <div><span>01</span><strong>Atendimento personalizado</strong></div>
-              <div><span>02</span><strong>Comparação com orientação</strong></div>
-              <div><span>03</span><strong>Conversa direta no WhatsApp</strong></div>
-            </div>
-          </div>
-        </div>
-        <div class="opening-ribbon" aria-label="Principais soluções">
-          <span>Seguro Auto</span><span>Seguro Residencial</span><span>Seguro de Vida</span><span>Plano de Saúde</span>
         </div>
       </section>
 
-      <section class="partners" aria-labelledby="partners-title" data-reveal>
-        <div class="section-shell">
+      <section class="solution-scroll" aria-label="Principais soluções" data-horizontal-solutions>
+        <div class="solution-sticky">
+          <div class="solution-track" data-solution-track>
+            <article class="solution-panel solution-panel-auto"><p>Seguro Auto</p></article>
+            <article class="solution-panel solution-panel-home"><p>Seguro Residencial</p></article>
+            <article class="solution-panel solution-panel-life"><p>Seguro de Vida</p></article>
+            <article class="solution-panel solution-panel-health"><p>Plano de Saúde</p></article>
+          </div>
+          <div class="solution-progress" aria-hidden="true"><span data-solution-progress></span></div>
+        </div>
+      </section>
+
+      <section class="autoshopping" aria-labelledby="autoshopping-title">
+        <div class="section-shell autoshopping-grid">
+          <figure class="autoshopping-photo" data-reveal data-reveal-delay="1">
+            <img src="assets/incrivel-autoshopping-original.jpg" alt="Maria Paula Cautela de Almeida no Incrível AutoShopping" width="833" height="353" loading="lazy" />
+          </figure>
+          <div class="autoshopping-copy" data-reveal>
+            <h2 id="autoshopping-title">Corretora exclusiva do Incrível AutoShopping.</h2>
+            <p>Escolher um veículo também pede tranquilidade para protegê-lo. No Incrível AutoShopping, a G.E. oferece atendimento próximo para orientar sua cotação e comparar coberturas.</p>
+            <ul>
+              <li>Atendimento dentro do AutoShopping</li>
+              <li>Cotação de seguro para o seu veículo</li>
+              <li>Conversa simples, rápida e personalizada</li>
+            </ul>
+            <button class="primary-cta" type="button" data-interest="Seguro Auto" data-open-lead>Quero cotar meu veículo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="partners" aria-labelledby="partners-title">
+        <div class="section-shell carousel-shell" data-carousel data-carousel-autoplay="true" data-reveal>
           <div class="partners-heading">
             <div>
-              <p class="section-kicker">Parcerias</p>
-              <h2 id="partners-title">Conectados a grandes seguradoras do Brasil.</h2>
+              <h2 id="partners-title">Seguradoras parceiras</h2>
             </div>
-            <div class="carousel-controls" aria-label="Controles das marcas">
-              <button type="button" aria-label="Ver marcas anteriores" data-carousel-prev>←</button>
-              <button type="button" aria-label="Ver próximas marcas" data-carousel-next>→</button>
+            <div class="carousel-controls" aria-label="Controles das seguradoras">
+              <button type="button" aria-label="Ver seguradoras anteriores" data-carousel-prev>←</button>
+              <button type="button" aria-label="Ver próximas seguradoras" data-carousel-next>→</button>
             </div>
           </div>
-
-          <div class="partner-carousel" data-carousel>
-            <div class="partner-track" data-carousel-track role="list" aria-label="Seguradoras e parceiros" tabindex="0">
-              <a class="partner-card" href="https://www.portoseguro.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Porto">
-                <img src="/assets/partners/porto.svg" alt="Porto" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.bradescoseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Bradesco Seguros">
-                <img src="/assets/partners/bradesco-seguros.png" alt="Bradesco Seguros" loading="lazy" />
-              </a>
-              <a class="partner-card partner-card-c6" href="https://c6bank.com.br/c6-seg/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar C6 Seg">
-                <img src="/assets/partners/c6seg.png" alt="C6 Seg" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://ituran.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Ituran">
-                <img src="/assets/partners/ituran.png" alt="Ituran" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.hdiseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar HDI Seguros">
-                <img src="/assets/partners/hdi-seguros.png" alt="HDI Seguros" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.tokiomarine.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Tokio Marine">
-                <img src="/assets/partners/tokio.png" alt="Tokio Marine Seguradora" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://suhaiseguradora.com/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Suhai Seguradora">
-                <img src="/assets/partners/suhai.svg" alt="Suhai Seguradora" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.allianz.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Allianz">
-                <img src="/assets/partners/allianz.svg" alt="Allianz" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.mapfre.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Mapfre">
-                <img src="/assets/partners/mapfre.png" alt="Mapfre" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.yelumseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Yelum Seguradora">
-                <img src="/assets/partners/yelum.svg" alt="Yelum Seguradora" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.azulseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Azul Seguros">
-                <img src="/assets/partners/azul.svg" alt="Azul Seguros" loading="lazy" />
-              </a>
-              <a class="partner-card" href="https://www.itau.com.br/seguros" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Itaú Seguros">
-                <img src="/assets/partners/itau.svg" alt="Itaú Seguros" loading="lazy" />
-              </a>
+          <div class="partner-carousel">
+            <div class="partner-track" data-carousel-track role="list" aria-label="12 seguradoras parceiras" tabindex="0">
+              <a class="partner-card" data-carousel-item href="https://www.portoseguro.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Porto"><img src="assets/partners/porto.svg" alt="Porto Seguro" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.bradescoseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Bradesco Seguros"><img src="assets/partners/bradesco-seguros.png" alt="Bradesco Seguros" loading="lazy" /></a>
+              <a class="partner-card partner-card-c6" data-carousel-item href="https://c6bank.com.br/c6-seg/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar C6 Seg"><img src="assets/partners/c6seg.png" alt="C6 Seg" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://suhaiseguradora.com/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Suhai Seguradora"><img src="assets/partners/suhai.svg" alt="Suhai Seguradora" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.allianz.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Allianz"><img src="assets/partners/allianz.svg" alt="Allianz" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.mapfre.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Mapfre"><img src="assets/partners/mapfre.png" alt="Mapfre" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://ituran.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Ituran"><img src="assets/partners/ituran.png" alt="Ituran" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.hdiseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar HDI Seguros"><img src="assets/partners/hdi-seguros.png" alt="HDI Seguros" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.tokiomarine.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Tokio Marine"><img src="assets/partners/tokio.png" alt="Tokio Marine Seguradora" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.yelumseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Yelum"><img src="assets/partners/yelum.svg" alt="Yelum Seguradora" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.azulseguros.com.br/" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Azul Seguros"><img src="assets/partners/azul.svg" alt="Azul Seguros" loading="lazy" /></a>
+              <a class="partner-card" data-carousel-item href="https://www.itau.com.br/seguros" target="_blank" rel="noopener noreferrer" role="listitem" aria-label="Visitar Itaú Seguros"><img src="assets/partners/itau.svg" alt="Itaú Seguros" loading="lazy" /></a>
             </div>
           </div>
           <p class="partner-note">As marcas pertencem aos seus respectivos titulares. Produtos sujeitos à análise e disponibilidade de cada seguradora.</p>
@@ -203,38 +226,67 @@
       </section>
 
       <section class="insurance" id="seguros" aria-labelledby="insurance-title">
-        <div class="section-shell">
-          <div class="section-heading" data-reveal>
-            <p class="section-kicker">Seguros</p>
+        <div class="section-shell insurance-shell" data-carousel data-reveal>
+          <div class="insurance-heading">
             <h2 id="insurance-title">Cada fase pede uma proteção diferente.</h2>
             <p>Conte o que precisa proteger. A G.E. ajuda a comparar coberturas e encontrar uma opção adequada ao seu momento.</p>
           </div>
-          <div class="insurance-grid">
-            <article class="insurance-card insurance-card-featured" data-reveal>
-              <span class="insurance-code">AUTO</span>
-              <div><h3>Seguro Auto</h3><p>Proteção para seu veículo com coberturas e assistências alinhadas à sua rotina.</p></div>
-              <button type="button" data-interest="Seguro Auto" data-open-lead>Cotar seguro</button>
-            </article>
-            <article class="insurance-card" data-reveal data-reveal-delay="1">
-              <span class="insurance-code">LAR</span>
-              <div><h3>Seguro Residencial</h3><p>Cuidados para sua casa, seus bens e os imprevistos do dia a dia.</p></div>
-              <button type="button" data-interest="Seguro Residencial" data-open-lead>Cotar seguro</button>
-            </article>
-            <article class="insurance-card" data-reveal data-reveal-delay="2">
-              <span class="insurance-code">VIDA</span>
-              <div><h3>Seguro de Vida</h3><p>Planejamento e segurança financeira para você e quem depende de você.</p></div>
-              <button type="button" data-interest="Seguro de Vida" data-open-lead>Cotar seguro</button>
-            </article>
-            <article class="insurance-card" data-reveal>
-              <span class="insurance-code">VIAGEM</span>
-              <div><h3>Seguro Viagem</h3><p>Assistência e tranquilidade para aproveitar cada destino com mais segurança.</p></div>
-              <button type="button" data-interest="Seguro Viagem" data-open-lead>Cotar seguro</button>
-            </article>
-            <article class="insurance-card insurance-card-wide" data-reveal data-reveal-delay="1">
-              <span class="insurance-code">EQUIP</span>
-              <div><h3>Seguro para Equipamentos</h3><p>Proteção para celulares, eletrônicos e equipamentos importantes no trabalho ou na vida pessoal.</p></div>
-              <button type="button" data-interest="Seguro para Equipamentos" data-open-lead>Cotar seguro</button>
-            </article>
+          <div class="insurance-carousel insurance-gallery">
+            <div class="insurance-track" data-carousel-track role="list" aria-label="Soluções de seguros" tabindex="0">
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-auto.jpg" alt="Automóvel esportivo em uma estrada, representando o Seguro Auto" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Seguro Auto</h3>
+                  <p>Proteção para seu veículo com coberturas e assistências alinhadas à sua rotina.</p>
+                  <button type="button" data-interest="Seguro Auto" data-open-lead>Cotar seguro</button>
+                </div>
+              </article>
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-home.jpg" alt="Casa contemporânea iluminada, representando o Seguro Residencial" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Seguro Residencial</h3>
+                  <p>Cuidados para sua casa, seus bens e os imprevistos do dia a dia.</p>
+                  <button type="button" data-interest="Seguro Residencial" data-open-lead>Cotar seguro</button>
+                </div>
+              </article>
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-life.jpg" alt="Família unida à beira-mar, representando o Seguro de Vida" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Seguro de Vida</h3>
+                  <p>Planejamento e segurança financeira para você e quem depende de você.</p>
+                  <button type="button" data-interest="Seguro de Vida" data-open-lead>Cotar seguro</button>
+                </div>
+              </article>
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-travel.jpg" alt="Acessórios de viagem sobre um mapa, representando o Seguro Viagem" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Seguro Viagem</h3>
+                  <p>Assistência e tranquilidade para aproveitar cada destino com mais segurança.</p>
+                  <button type="button" data-interest="Seguro Viagem" data-open-lead>Cotar seguro</button>
+                </div>
+              </article>
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-equipment.jpg" alt="Notebook sobre uma mesa de trabalho, representando o Seguro para Equipamentos" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Seguro para Equipamentos</h3>
+                  <p>Proteção para celulares, eletrônicos e equipamentos importantes no trabalho ou na vida pessoal.</p>
+                  <button type="button" data-interest="Seguro para Equipamentos" data-open-lead>Cotar seguro</button>
+                </div>
+              </article>
+              <article class="insurance-slide" data-carousel-item role="listitem">
+                <img src="assets/insurance-health.jpg" alt="Profissional da saúde em atendimento, representando o Plano de Saúde" width="1600" height="1067" loading="lazy" />
+                <div class="insurance-slide-content">
+                  <h3>Plano de Saúde</h3>
+                  <p>Orientação para escolher uma cobertura de saúde adequada para você, sua família ou sua empresa.</p>
+                  <button type="button" data-interest="Plano de Saúde" data-open-lead>Cotar plano</button>
+                </div>
+              </article>
+            </div>
+            <div class="carousel-controls insurance-gallery-controls" aria-label="Controles dos seguros">
+              <button type="button" aria-label="Ver seguro anterior" data-carousel-prev>←</button>
+              <button type="button" aria-label="Ver próximo seguro" data-carousel-next>→</button>
+            </div>
+            <div class="carousel-dots" data-carousel-dots aria-label="Escolher seguro"></div>
           </div>
         </div>
       </section>
@@ -242,12 +294,11 @@
       <section class="about" id="sobre" aria-labelledby="about-title">
         <div class="section-shell about-grid">
           <div class="about-title-wrap" data-reveal>
-            <p class="section-kicker section-kicker-light">Sobre nós</p>
             <h2 id="about-title">Uma corretora próxima, do primeiro contato à escolha.</h2>
           </div>
           <div class="about-copy" data-reveal data-reveal-delay="1">
             <p>A <strong>G.E. Corretora de Seguros</strong> oferece soluções para proteger você, sua família e seu patrimônio, com orientação clara e atendimento personalizado.</p>
-            <p>Localizada no Feirão do Alto Shopping, no Davó, em Mogi das Cruzes, a G.E. torna a escolha do seu seguro mais simples e segura.</p>
+            <p>Localizada em Mogi das Cruzes, a G.E. torna a escolha do seu seguro mais simples, transparente e segura.</p>
             <dl class="about-facts">
               <div><dt>Atuação</dt><dd>Mogi das Cruzes, Alto Tietê e atendimento digital</dd></div>
               <div><dt>Especialidade</dt><dd>Proteção personalizada para pessoas e empresas</dd></div>
@@ -258,9 +309,9 @@
       </section>
 
       <section class="health" id="saude" aria-labelledby="health-title">
-        <div class="section-shell health-grid">
+        <div class="section-shell health-grid health-stage">
+          <img class="health-stage-media" src="assets/insurance-health.jpg" alt="" width="1600" height="1067" loading="lazy" aria-hidden="true" />
           <div class="health-copy" data-reveal>
-            <p class="section-kicker">Plano de saúde</p>
             <h2 id="health-title">Cuidado que acompanha a sua realidade.</h2>
             <p>Avaliamos perfil, região de atendimento e necessidades para orientar sua busca por um plano de saúde.</p>
             <div class="profile-selector" role="group" aria-label="Selecione seu perfil">
@@ -282,51 +333,73 @@
         </div>
       </section>
 
+      <section class="health-brands" aria-labelledby="health-brands-title">
+        <div class="section-shell carousel-shell" data-carousel data-carousel-autoplay="true" data-reveal>
+          <div class="partners-heading">
+            <div>
+              <h2 id="health-brands-title">Operadoras de saúde parceiras</h2>
+            </div>
+            <div class="carousel-controls" aria-label="Controles das operadoras de saúde">
+              <button type="button" aria-label="Ver operadoras anteriores" data-carousel-prev>←</button>
+              <button type="button" aria-label="Ver próximas operadoras" data-carousel-next>→</button>
+            </div>
+          </div>
+          <div class="partner-carousel health-brand-carousel">
+            <div class="partner-track health-brand-track" data-carousel-track role="list" aria-label="24 operadoras de saúde" tabindex="0">
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/amil.png" alt="Amil" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/notredame-intermedica.png" alt="NotreDame Intermédica" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/unimed.png" alt="Unimed" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/sulamerica-saude.png" alt="SulAmérica Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/sao-miguel-saude.png" alt="São Miguel Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/hapvida.png" alt="Hapvida" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/bradesco-saude.png" alt="Bradesco Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/porto-saude.png" alt="Porto Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/care-plus.png" alt="Care Plus" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/omint-saude.png" alt="Omint Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/prevent-senior.png" alt="Prevent Senior" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/medsenior.png" alt="MedSênior" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/alice.png" alt="Alice" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/sami-saude.png" alt="Sami Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/sao-cristovao-saude.png" alt="São Cristóvão Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/trasmontano-saude.png" alt="Trasmontano Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/plena-saude.png" alt="Plena Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/ameplan-saude.png" alt="Ameplan Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/biovida-saude.png" alt="Biovida Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/seguros-unimed.png" alt="Seguros Unimed" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/cruz-azul-saude.png" alt="Cruz Azul Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/qsaude.png" alt="Qsaúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/blue-med-saude.png" alt="Blue Med Saúde" loading="lazy" /></div>
+              <div class="partner-card health-brand-card" data-carousel-item role="listitem"><img src="assets/partners/health/santa-helena-saude.png" alt="Santa Helena Saúde" loading="lazy" /></div>
+            </div>
+          </div>
+          <p class="partner-note">Disponibilidade sujeita à região, ao produto e à modalidade de contratação de cada operadora.</p>
+        </div>
+      </section>
+
       <section class="process" aria-labelledby="process-title">
         <div class="section-shell process-intro" data-reveal>
-          <p class="section-kicker section-kicker-light">Como funciona</p>
           <h2 id="process-title">Um caminho simples até a sua proteção.</h2>
           <p>Role a página para acompanhar cada etapa.</p>
         </div>
         <ol class="process-stack">
-          <li class="process-card process-card-one" style="--stack-index: 0" data-reveal>
-            <span>01</span><div><p>Primeiro passo</p><h3>Você conta o que precisa.</h3><strong>Preencha seus dados e responda perguntas rápidas sobre sua necessidade.</strong></div>
-          </li>
-          <li class="process-card process-card-two" style="--stack-index: 1" data-reveal>
-            <span>02</span><div><p>Orientação</p><h3>Analisamos seu perfil.</h3><strong>Um especialista entende suas prioridades antes de apresentar possibilidades.</strong></div>
-          </li>
-          <li class="process-card process-card-three" style="--stack-index: 2" data-reveal>
-            <span>03</span><div><p>Decisão</p><h3>Você compara com clareza.</h3><strong>Receba orientação sobre coberturas, condições e próximos passos.</strong></div>
-          </li>
+          <li class="process-card process-card-one" style="--stack-index: 0" data-reveal><span>01</span><div><p>Primeiro passo</p><h3>Você conta o que precisa.</h3><strong>Preencha seus dados e responda perguntas rápidas sobre sua necessidade.</strong></div></li>
+          <li class="process-card process-card-two" style="--stack-index: 1" data-reveal><span>02</span><div><p>Orientação</p><h3>Analisamos seu perfil.</h3><strong>Um especialista entende suas prioridades antes de apresentar possibilidades.</strong></div></li>
+          <li class="process-card process-card-three" style="--stack-index: 2" data-reveal><span>03</span><div><p>Decisão</p><h3>Você compara com clareza.</h3><strong>Receba orientação sobre coberturas, condições e próximos passos.</strong></div></li>
         </ol>
       </section>
 
       <section class="answers" aria-labelledby="answers-title">
         <div class="section-shell answers-grid">
           <div class="faq-wrap" data-reveal>
-            <p class="section-kicker">Dúvidas</p>
             <h2 id="answers-title">Perguntas frequentes</h2>
             <div class="faq-list" data-faq>
-              <details open>
-                <summary><span>A cotação tem custo?</span><i aria-hidden="true">+</i></summary>
-                <div class="faq-answer"><p>Não. A análise inicial e a cotação são feitas sem custo, conforme o perfil e a disponibilidade das seguradoras.</p></div>
-              </details>
-              <details>
-                <summary><span>Quais seguros a G.E. oferece?</span><i aria-hidden="true">+</i></summary>
-                <div class="faq-answer"><p>Atendemos seguro auto, residencial, vida, viagem, equipamentos e planos de saúde, além de outras soluções sob consulta.</p></div>
-              </details>
-              <details>
-                <summary><span>Posso resolver pelo WhatsApp?</span><i aria-hidden="true">+</i></summary>
-                <div class="faq-answer"><p>Sim. Ao enviar o formulário, o site abre uma mensagem pronta no WhatsApp para você iniciar o atendimento.</p></div>
-              </details>
-              <details>
-                <summary><span>Vocês atendem empresas?</span><i aria-hidden="true">+</i></summary>
-                <div class="faq-answer"><p>Sim. Você pode indicar o perfil empresarial no formulário para direcionar o atendimento.</p></div>
-              </details>
+              <details open><summary><span>A cotação tem custo?</span><i aria-hidden="true">+</i></summary><div class="faq-answer"><p>Não. A análise inicial e a cotação são feitas sem custo, conforme o perfil e a disponibilidade das seguradoras.</p></div></details>
+              <details><summary><span>Quais seguros a G.E. oferece?</span><i aria-hidden="true">+</i></summary><div class="faq-answer"><p>Atendemos seguro auto, residencial, vida, viagem, equipamentos e planos de saúde, além de outras soluções sob consulta.</p></div></details>
+              <details><summary><span>Posso resolver pelo WhatsApp?</span><i aria-hidden="true">+</i></summary><div class="faq-answer"><p>Sim. Ao enviar o formulário, o site abre uma mensagem pronta no WhatsApp para você iniciar o atendimento.</p></div></details>
+              <details><summary><span>Vocês atendem empresas?</span><i aria-hidden="true">+</i></summary><div class="faq-answer"><p>Sim. Você pode indicar o perfil empresarial no formulário para direcionar o atendimento.</p></div></details>
             </div>
           </div>
           <aside class="answer-aside" data-reveal data-reveal-delay="1">
-            <img src="/assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" loading="lazy" />
             <h3>Ainda ficou com uma dúvida?</h3>
             <p>Conte o que você procura. A conversa já começa com as informações certas.</p>
             <button type="button" data-open-lead>Preencher atendimento</button>
@@ -334,13 +407,34 @@
         </div>
       </section>
 
+      <section class="location" aria-labelledby="location-title">
+        <div class="section-shell location-grid">
+          <div class="location-details" data-reveal>
+            <h2 id="location-title">Venha conversar com a gente.</h2>
+            <p class="location-type">Atendimento presencial em Mogi das Cruzes</p>
+            <address>Av. Ver. Narciso Yague Guimarães, 1000<br />Vila Partenio, Mogi das Cruzes — SP<br />CEP 08780-200</address>
+            <a class="route-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=Av.%20Ver.%20Narciso%20Yague%20Guimar%C3%A3es%2C%201000%2C%20Mogi%20das%20Cruzes%20SP" target="_blank" rel="noopener noreferrer">Ver rotas no Google Maps →</a>
+            <div class="hours">
+              <h3>Horários de atendimento</h3>
+              <dl>
+                <div><dt>Segunda a sexta</dt><dd>09:00–12:00 · 13:00–17:30</dd></div>
+                <div><dt>Sábado</dt><dd>09:00–12:00 · 13:00–16:00</dd></div>
+                <div><dt>Domingo</dt><dd>Fechado</dd></div>
+              </dl>
+            </div>
+          </div>
+          <div class="map-wrap" data-reveal data-reveal-delay="1">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3658.431231599815!2d-46.1742563!3d-23.5169875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94cdd9005bbc7253%3A0x73492fd71b2a6831!2sG.E.%20Corretora%20de%20Seguros!5e0!3m2!1spt-BR!2sbr!4v1789153820083!5m2!1spt-BR!2sbr" width="600" height="450" style="border:0" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" title="Mapa da G.E. Corretora de Seguros"></iframe>
+          </div>
+        </div>
+      </section>
+
       <section class="contact" id="contato" aria-labelledby="contact-title">
         <div class="section-shell contact-grid">
           <div class="contact-copy" data-reveal>
-            <p class="section-kicker section-kicker-light">Contato</p>
             <h2 id="contact-title">Vamos encontrar a proteção certa?</h2>
             <p>Preencha os dados e o WhatsApp abrirá com uma mensagem pronta para a equipe da G.E.</p>
-            <div class="contact-location"><span>Atendimento presencial</span><strong>Feirão do Alto Shopping, no Davó</strong><p>Mogi das Cruzes, SP</p></div>
+            <div class="contact-location"><span>Atendimento presencial</span><strong>Av. Ver. Narciso Yague Guimarães, 1000</strong><p>Vila Partenio, Mogi das Cruzes — SP</p></div>
           </div>
           <form class="contact-form" id="contact-form" novalidate data-reveal data-reveal-delay="1">
             <div class="form-row">
@@ -362,10 +456,28 @@
     </main>
 
     <footer class="site-footer">
-      <div class="section-shell footer-inner">
-        <a class="footer-brand" href="#home" aria-label="Voltar ao início"><img src="/assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" loading="lazy" /></a>
-        <div class="footer-links"><a href="#seguros">Seguros</a><a href="#saude">Plano de saúde</a><button type="button" data-privacy-open>Privacidade</button></div>
-        <p>© 2026 G.E. Corretora de Seguros. Todos os direitos reservados.</p>
+      <div class="section-shell footer-content">
+        <div class="footer-cta" data-reveal>
+          <div><p>Atendimento próximo, escolha segura.</p><h2>Vamos cuidar do que importa juntos.</h2></div>
+          <button type="button" data-open-lead><span>Iniciar atendimento</span><i aria-hidden="true">→</i></button>
+        </div>
+        <div class="footer-columns">
+          <div>
+            <h3>Mapa do site</h3>
+            <a href="#home">Home</a><a href="#sobre">Sobre nós</a><a href="#seguros">Seguros</a><a href="#saude">Plano de saúde</a><a href="#contato">Contato</a>
+          </div>
+          <div>
+            <h3>Atendimento</h3>
+            <button type="button" data-direct-whatsapp>WhatsApp</button>
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Av.%20Ver.%20Narciso%20Yague%20Guimar%C3%A3es%2C%201000%2C%20Mogi%20das%20Cruzes%20SP" target="_blank" rel="noopener noreferrer">Como chegar</a>
+            <button type="button" data-privacy-open>Privacidade</button>
+          </div>
+          <address>Av. Ver. Narciso Yague Guimarães, 1000<br />Vila Partenio, Mogi das Cruzes — SP<br />08780-200</address>
+        </div>
+        <div class="footer-wordmark" data-reveal aria-label="G.E. Corretora de Seguros">
+          <span class="footer-letter" style="--letter-index: 0">G</span><span class="footer-letter" style="--letter-index: 1">.</span><span class="footer-letter" style="--letter-index: 2">E</span><span class="footer-letter" style="--letter-index: 3">.</span><span class="footer-space" aria-hidden="true">&nbsp;</span><span class="footer-letter" style="--letter-index: 4">C</span><span class="footer-letter" style="--letter-index: 5">o</span><span class="footer-letter" style="--letter-index: 6">r</span><span class="footer-letter" style="--letter-index: 7">r</span><span class="footer-letter" style="--letter-index: 8">e</span><span class="footer-letter" style="--letter-index: 9">t</span><span class="footer-letter" style="--letter-index: 10">o</span><span class="footer-letter" style="--letter-index: 11">r</span><span class="footer-letter" style="--letter-index: 12">a</span>
+        </div>
+        <div class="footer-bottom"><p>© 2026 G.E. Corretora de Seguros.</p><p>Todos os direitos reservados.</p></div>
       </div>
     </footer>
 
@@ -376,18 +488,17 @@
     <dialog class="lead-dialog" id="lead-dialog" aria-labelledby="lead-title">
       <div class="lead-layout">
         <aside class="lead-aside">
-          <img src="/assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
-          <div><p>Atendimento inteligente</p><h2>Seu caminho até a proteção começa aqui.</h2></div>
+          <img src="assets/ge-corretora-logo.jpg" alt="G.E. Corretora de Seguros" width="708" height="384" />
+          <div class="lead-aside-copy">
+            <p>Atendimento inteligente</p>
+            <h2 id="lead-title">Conte o básico e siga para o WhatsApp.</h2>
+            <span>Suas respostas serão organizadas em uma mensagem pronta para agilizar o atendimento.</span>
+          </div>
           <small>Leva cerca de 1 minuto. Seus dados são tratados com cuidado.</small>
         </aside>
         <div class="lead-main">
           <button class="dialog-close" type="button" aria-label="Fechar atendimento" data-close-lead><span></span><span></span></button>
-          <div class="lead-form-head"><span>Formulário rápido</span><strong>Uma única etapa</strong></div>
           <form id="lead-form" novalidate>
-            <p class="lead-step-kicker">Vamos começar</p>
-            <h2 id="lead-title">Conte o básico e siga para o WhatsApp.</h2>
-            <p class="lead-description">Suas respostas serão organizadas em uma mensagem pronta para agilizar o atendimento.</p>
-
             <div class="lead-fields">
               <div class="field"><label for="lead-name">Nome completo</label><input id="lead-name" name="name" type="text" autocomplete="name" maxlength="80" required autofocus /><small class="field-error" id="lead-name-error"></small></div>
               <div class="field"><label for="lead-phone">Número de WhatsApp</label><input id="lead-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" required aria-describedby="lead-phone-helper lead-phone-error" /><small class="field-helper" id="lead-phone-helper">Inclua o DDD.</small><small class="field-error" id="lead-phone-error"></small></div>
@@ -410,14 +521,15 @@
               <div class="field"><label for="lead-best-time">Melhor horário <span>opcional</span></label><select id="lead-best-time" name="bestTime"><option value="">Sem preferência</option><option>Manhã</option><option>Tarde</option><option>Noite</option></select></div>
             </div>
 
-            <div class="field"><label for="lead-message">Quer acrescentar algo? <span>opcional</span></label><textarea id="lead-message" name="message" rows="3" maxlength="360" placeholder="Ex.: quero cobertura para dois veículos"></textarea></div>
+            <div class="field"><label for="lead-message">Quer acrescentar algo? <span>opcional</span></label><textarea id="lead-message" name="message" rows="2" maxlength="360" placeholder="Ex.: quero cobertura para dois veículos"></textarea></div>
             <label class="consent-check lead-consent" for="lead-consent"><input id="lead-consent" name="consent" type="checkbox" required /><span>Autorizo o contato da G.E. Corretora sobre esta solicitação e li o aviso de privacidade.</span></label>
             <small class="field-error" id="lead-consent-error"></small>
             <div class="field field-honeypot" aria-hidden="true"><label for="lead-company">Empresa</label><input id="lead-company" name="company" type="text" tabindex="-1" autocomplete="off" /></div>
-            <button class="lead-submit" type="submit" data-lead-submit><span>Enviar respostas e abrir WhatsApp</span></button>
-            <p class="lead-status" role="status" aria-live="polite"></p>
+            <div class="lead-submit-dock">
+              <button class="lead-submit" type="submit" data-lead-submit><span>Continuar direto no WhatsApp</span><i aria-hidden="true">→</i></button>
+              <p class="lead-status" role="status" aria-live="polite"></p>
+            </div>
           </form>
-          <button class="lead-direct" type="button" data-direct-whatsapp>Prefiro ir direto ao WhatsApp</button>
         </div>
       </div>
     </dialog>
@@ -431,7 +543,7 @@
     </dialog>
 
     <noscript><div class="noscript-note">Ative o JavaScript para usar o atendimento. Você ainda pode navegar pelas informações do site.</div></noscript>
-    <script src="/site-config.js"></script>
-    <script src="/app.js" defer></script>
+    <script src="site-config.js"></script>
+    <script src="app.js" defer></script>
   </body>
 </html>

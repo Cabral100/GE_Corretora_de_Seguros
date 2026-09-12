@@ -1,9 +1,8 @@
 window.GE_SITE_CONFIG = Object.freeze({
-  leadEndpoint: "/api/lead",
+  leadEndpoint: window.location.hostname.endsWith("github.io") ? "" : "/api/lead",
   whatsappNumber: "",
   popupDelayMs: 900,
-  autoOpenPopup: true,
+  autoOpenPopup: false,
   analyticsEventName: "generate_lead",
   brandName: "G.E. Corretora de Seguros"
 });
-

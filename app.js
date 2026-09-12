@@ -22,7 +22,6 @@
   const mobileNavigation = window.matchMedia("(max-width: 860px)");
 
   let selectedInterest = "";
-  let carouselTimer = null;
 
   function digitsOnly(value) {
     return String(value || "").replace(/\D/g, "");
@@ -241,7 +240,10 @@
     selectedInterest = interest || selectedInterest;
     if (selectedInterest && leadForm && leadForm.elements.interest) leadForm.elements.interest.value = selectedInterest;
     closeMenu();
-    if (!leadDialog.open) leadDialog.showModal();
+    if (!leadDialog.open) {
+      if (typeof leadDialog.showModal === "function") leadDialog.showModal();
+      else leadDialog.setAttribute("open", "");
+    }
     document.body.classList.add("dialog-open");
     window.setTimeout(() => {
       const input = leadForm && leadForm.elements.name;
@@ -251,7 +253,10 @@
   }
 
   function closeLead() {
-    if (leadDialog && leadDialog.open) leadDialog.close();
+    if (leadDialog && leadDialog.open) {
+      if (typeof leadDialog.close === "function") leadDialog.close();
+      else leadDialog.removeAttribute("open");
+    }
     document.body.classList.remove("dialog-open");
   }
 
@@ -323,37 +328,105 @@
   }
 
   function setupCarousel() {
-    const carousel = document.querySelector("[data-carousel]");
-    const track = carousel && carousel.querySelector("[data-carousel-track]");
-    const previous = document.querySelector("[data-carousel-prev]");
-    const next = document.querySelector("[data-carousel-next]");
-    if (!track || !previous || !next) return;
+    document.querySelectorAll("[data-carousel]").forEach((carousel) => {
+      const track = carousel.querySelector("[data-carousel-track]");
+      const previous = carousel.querySelector("[data-carousel-prev]");
+      const next = carousel.querySelector("[data-carousel-next]");
+      if (!track || !previous || !next) return;
 
-    const getStep = () => {
-      const first = track.querySelector(".partner-card");
-      const gap = Number.parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || 0);
-      return first ? first.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
-    };
-    const move = (direction) => track.scrollBy({ left: getStep() * direction, behavior: reducedMotion.matches ? "auto" : "smooth" });
-    previous.addEventListener("click", () => move(-1));
-    next.addEventListener("click", () => move(1));
+      let timer = null;
+      let scrollFrame = 0;
+      const items = Array.from(track.querySelectorAll("[data-carousel-item]"));
+      const dotsContainer = carousel.querySelector("[data-carousel-dots]");
+      const getStep = () => {
+        const first = items[0];
+        const style = getComputedStyle(track);
+        const gap = Number.parseFloat(style.columnGap || style.gap || 0);
+        return first ? first.getBoundingClientRect().width + gap : track.clientWidth * 0.8;
+      };
+      const move = (direction) => track.scrollBy({ left: getStep() * direction, behavior: reducedMotion.matches ? "auto" : "smooth" });
 
-    const stop = () => { if (carouselTimer) window.clearInterval(carouselTimer); carouselTimer = null; };
-    const start = () => {
-      stop();
-      if (reducedMotion.matches) return;
-      carouselTimer = window.setInterval(() => {
-        const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
-        if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
-        else move(1);
-      }, 4200);
+      const dots = dotsContainer ? items.map((item, index) => {
+        const dot = document.createElement("button");
+        const label = item.querySelector("h3")?.textContent?.trim() || `item ${index + 1}`;
+        dot.type = "button";
+        dot.setAttribute("aria-label", `Ver ${label}`);
+        dot.addEventListener("click", () => track.scrollTo({ left: getStep() * index, behavior: reducedMotion.matches ? "auto" : "smooth" }));
+        dotsContainer.appendChild(dot);
+        return dot;
+      }) : [];
+
+      const updateState = () => {
+        const maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+        const current = Math.min(items.length - 1, Math.max(0, Math.round(track.scrollLeft / Math.max(1, getStep()))));
+        previous.disabled = track.scrollLeft <= 4;
+        next.disabled = track.scrollLeft >= maxScroll - 4;
+        dots.forEach((dot, index) => {
+          if (index === current) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
+      };
+
+      previous.addEventListener("click", () => move(-1));
+      next.addEventListener("click", () => move(1));
+      track.addEventListener("keydown", (event) => {
+        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        event.preventDefault();
+        move(event.key === "ArrowLeft" ? -1 : 1);
+      });
+      track.addEventListener("scroll", () => {
+        if (scrollFrame) window.cancelAnimationFrame(scrollFrame);
+        scrollFrame = window.requestAnimationFrame(updateState);
+      }, { passive: true });
+      window.addEventListener("resize", updateState, { passive: true });
+
+      const stop = () => {
+        if (timer) window.clearInterval(timer);
+        timer = null;
+      };
+      const start = () => {
+        stop();
+        if (reducedMotion.matches || carousel.dataset.carouselAutoplay !== "true") return;
+        timer = window.setInterval(() => {
+          const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
+          if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
+          else move(1);
+        }, 4200);
+      };
+      carousel.addEventListener("mouseenter", stop);
+      carousel.addEventListener("mouseleave", start);
+      carousel.addEventListener("focusin", stop);
+      carousel.addEventListener("focusout", start);
+      carousel.addEventListener("touchstart", stop, { passive: true });
+      updateState();
+      start();
+    });
+  }
+
+  function setupHorizontalSolutions() {
+    const section = document.querySelector("[data-horizontal-solutions]");
+    const track = section?.querySelector("[data-solution-track]");
+    const progressBar = section?.querySelector("[data-solution-progress]");
+    if (!section || !track || reducedMotion.matches) return;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+      const travel = Math.max(1, section.offsetHeight - window.innerHeight);
+      const progress = Math.min(1, Math.max(0, (window.scrollY - sectionTop) / travel));
+      const distance = Math.max(0, track.scrollWidth - window.innerWidth);
+      track.style.transform = `translate3d(${-distance * progress}px, 0, 0)`;
+      if (progressBar) progressBar.style.transform = `scaleX(${progress})`;
     };
-    carousel.addEventListener("mouseenter", stop);
-    carousel.addEventListener("mouseleave", start);
-    carousel.addEventListener("focusin", stop);
-    carousel.addEventListener("focusout", start);
-    carousel.addEventListener("touchstart", stop, { passive: true });
-    start();
+    const requestUpdate = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(update);
+    };
+
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate, { passive: true });
+    update();
   }
 
   function setupNavigationSpy() {
@@ -378,7 +451,11 @@
   document.querySelectorAll("[data-close-lead]").forEach((button) => button.addEventListener("click", closeLead));
   document.querySelectorAll("[data-direct-whatsapp]").forEach((button) => button.addEventListener("click", directWhatsapp));
   document.querySelectorAll("[data-health-profile]").forEach((button) => button.addEventListener("click", () => setHealthProfile(button.dataset.healthProfile)));
-  document.querySelectorAll("[data-privacy-open]").forEach((button) => button.addEventListener("click", () => { if (privacyDialog && !privacyDialog.open) privacyDialog.showModal(); }));
+  document.querySelectorAll("[data-privacy-open]").forEach((button) => button.addEventListener("click", () => {
+    if (!privacyDialog || privacyDialog.open) return;
+    if (typeof privacyDialog.showModal === "function") privacyDialog.showModal();
+    else privacyDialog.setAttribute("open", "");
+  }));
   document.querySelectorAll("[data-privacy-close]").forEach((button) => button.addEventListener("click", () => { if (privacyDialog && privacyDialog.open) privacyDialog.close(); }));
 
   if (leadForm) leadForm.addEventListener("submit", handleLeadSubmit);
@@ -416,6 +493,7 @@
   setupReveals();
   setupFaq();
   setupCarousel();
+  setupHorizontalSolutions();
   setupNavigationSpy();
 
   if (config.autoOpenPopup && leadDialog) window.setTimeout(() => openLead(""), Math.max(250, Number(config.popupDelayMs) || 900));

@@ -17,8 +17,9 @@ Esse modo é suficiente para revisar o visual e testar a abertura do WhatsApp. P
 ## Arquivos principais
 
 - `index.html`: conteúdo, SEO e formulários.
-- `styles.css`: identidade visual e responsividade.
-- `app.js`: pop-up de etapa única, validações, carrossel, revelações no scroll, WhatsApp e eventos.
+- `styles.css`: identidade visual e responsividade-base.
+- `enhancements.css`: refinamentos da abertura, carrosséis, mapa, pop-up e rodapé editorial.
+- `app.js`: pop-up de etapa única, validações, múltiplos carrosséis, revelações no scroll, WhatsApp e eventos.
 - `site-config.js`: número público do WhatsApp e opções do pop-up.
 - `api/lead.js`: entrega de leads por e-mail, webhook e ActiveCampaign.
 - `docs/INTEGRACOES.md`: configuração dos serviços externos.
@@ -29,5 +30,15 @@ Esse modo é suficiente para revisar o visual e testar a abertura do WhatsApp. P
 2. Configure o e-mail de destino e as credenciais na hospedagem conforme `docs/INTEGRACOES.md`.
 3. Confirme o domínio final. O SEO está preparado para `gecorretoradeseguros.com.br`.
 4. Rode `npm.cmd run check` no Windows para executar a validação local.
+
+Os arquivos em `assets/partners/health/` foram extraídos dos PDFs de referência enviados para o projeto. A imagem original do Incrível AutoShopping permanece em `assets/incrivel-autoshopping-original.jpg`, sem alteração generativa.
+
+## Publicar no GitHub Pages
+
+O projeto inclui um fluxo em `.github/workflows/deploy-pages.yml`. Depois de enviar os arquivos ao GitHub, habilite **Settings → Pages → Source: GitHub Actions**. Os caminhos relativos mantêm imagens, estilos e scripts funcionando tanto no domínio principal quanto em um subdiretório de projeto.
+
+## Publicar na Vercel
+
+Importe o repositório como projeto sem framework. A Vercel serve os arquivos estáticos e mantém a função opcional `api/lead.js` disponível para as integrações descritas em `docs/INTEGRACOES.md`.
 
 Nenhuma chave privada deve ser colocada em `site-config.js` ou enviada ao navegador.

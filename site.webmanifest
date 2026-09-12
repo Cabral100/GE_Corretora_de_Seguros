@@ -2,27 +2,26 @@
   "name": "G.E. Corretora de Seguros",
   "short_name": "G.E. Seguros",
   "description": "Seguros e planos de saúde com atendimento personalizado.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#101c4e",
   "icons": [
     {
-      "src": "/assets/icon-192.png",
+      "src": "assets/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/assets/icon-512.png",
+      "src": "assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/assets/icon-maskable-512.png",
+      "src": "assets/icon-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
     }
   ]
 }
-
