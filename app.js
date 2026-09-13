@@ -3,7 +3,7 @@
 
   const config = Object.freeze({
     leadEndpoint: "/api/lead",
-    whatsappNumber: "",
+    whatsappNumber: "5511993135111",
     popupDelayMs: 900,
     autoOpenPopup: true,
     analyticsEventName: "generate_lead",
@@ -409,9 +409,18 @@
     const progressBar = section?.querySelector("[data-solution-progress]");
     if (!section || !track || reducedMotion.matches) return;
 
+    const mobileSolutions = window.matchMedia("(max-width: 860px)");
     let frame = 0;
+
     const update = () => {
       frame = 0;
+      if (mobileSolutions.matches) {
+        track.style.removeProperty("transform");
+        const maxScroll = Math.max(1, track.scrollWidth - track.clientWidth);
+        const mobileProgress = Math.min(1, Math.max(0, track.scrollLeft / maxScroll));
+        if (progressBar) progressBar.style.transform = `scaleX(${mobileProgress})`;
+        return;
+      }
       const sectionTop = section.getBoundingClientRect().top + window.scrollY;
       const travel = Math.max(1, section.offsetHeight - window.innerHeight);
       const progress = Math.min(1, Math.max(0, (window.scrollY - sectionTop) / travel));
@@ -426,6 +435,8 @@
 
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate, { passive: true });
+    track.addEventListener("scroll", requestUpdate, { passive: true });
+    mobileSolutions.addEventListener("change", requestUpdate);
     update();
   }
 

@@ -28,7 +28,7 @@ jobs:
       - name: Preparar site estático
         run: |
           mkdir _site
-          cp index.html styles.css enhancements.css app.js site-config.js site.webmanifest robots.txt sitemap.xml .nojekyll _site/
+          cp index.html styles.css enhancements.css final-refresh.css app.js site-config.js site.webmanifest robots.txt sitemap.xml .nojekyll _site/
           cp -R assets _site/assets
       - name: Enviar arquivos estáticos
         uses: actions/upload-pages-artifact@v3

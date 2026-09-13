@@ -1,0 +1,736 @@
+/*
+ * Final visual layer.
+ * Kept separate so the photographic hero, navigation and founder section are
+ * deployed atomically and cannot be overridden by older refinement blocks.
+ */
+
+:root {
+  --header-height: 94px;
+}
+
+body {
+  font-family: "Manrope", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.012em;
+}
+
+h1,
+h2,
+h3,
+.opening-copy h1,
+.solution-panel p,
+.autoshopping-copy h2,
+.partners-heading h2,
+.insurance-heading h2,
+.insurance-slide h3,
+.about-owner-heading h2,
+.health-copy h2,
+.process-intro h2,
+.answers h2,
+.location-details h2,
+.contact-copy h2,
+.footer-cta h2 {
+  font-weight: 400;
+  letter-spacing: -0.055em;
+}
+
+button,
+.nav-links a,
+.nav-service,
+.mobile-nav-cta {
+  font-weight: 500;
+}
+
+/* White capsule navigation, including after scroll. */
+.site-header,
+.site-header.is-scrolled {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 12px 20px 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  transform: none;
+  transition: padding 180ms ease;
+}
+
+.site-header .header-inner,
+.site-header.is-scrolled .header-inner {
+  width: min(1440px, 100%);
+  min-height: 70px;
+  margin-inline: auto;
+  padding: 6px 14px 6px 22px;
+  border: 1px solid rgba(16, 28, 78, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: none;
+  backdrop-filter: blur(14px) saturate(120%);
+  transition: min-height 180ms ease, background-color 180ms ease;
+}
+
+.site-header.is-scrolled {
+  padding-top: 10px;
+}
+
+.site-header.is-scrolled .header-inner {
+  min-height: 64px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.site-header .nav-links a,
+.site-header:not(.is-scrolled) .nav-links a,
+.site-header.is-scrolled .nav-links a {
+  color: var(--navy-deep);
+  text-shadow: none;
+}
+
+.site-header .nav-service,
+.site-header:not(.is-scrolled) .nav-service,
+.site-header.is-scrolled .nav-service {
+  min-height: 46px;
+  border-radius: 999px;
+  background: var(--navy-deep);
+  color: var(--white);
+}
+
+.site-header .brand,
+.site-header.is-scrolled .brand {
+  width: 104px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 0;
+  background: transparent;
+}
+
+.site-header .brand img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@media (min-width: 861px) {
+  .site-header .header-inner,
+  .site-header.is-scrolled .header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 26px;
+  }
+
+  .site-header .main-nav {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+  }
+
+  .site-header .brand {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
+  }
+
+  .site-header .nav-service {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
+  }
+}
+
+/* Full-screen photographic hero with copy and controls over the image. */
+.opening {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 0;
+  overflow: hidden;
+  background: #090b14;
+  color: var(--white);
+}
+
+.opening::before {
+  display: none;
+}
+
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  align-items: center;
+  padding: 128px max(28px, calc((100vw - 1440px) / 2 + 28px)) 118px;
+  overflow: hidden;
+}
+
+.hero-backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.hero-stage::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: auto;
+  aspect-ratio: auto;
+  border: 0;
+  border-radius: 0;
+  transform: none;
+  background:
+    linear-gradient(90deg, rgba(6, 9, 22, 0.86) 0%, rgba(6, 9, 22, 0.63) 42%, rgba(6, 9, 22, 0.16) 76%),
+    linear-gradient(0deg, rgba(6, 9, 22, 0.78) 0%, rgba(6, 9, 22, 0.03) 49%, rgba(6, 9, 22, 0.35) 100%);
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.opening-copy {
+  position: relative;
+  z-index: 2;
+  width: min(920px, 74vw);
+  display: grid;
+  justify-items: start;
+  text-align: left;
+}
+
+.opening-copy h1 {
+  max-width: 14.5ch;
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(4.5rem, 7.2vw, 8rem);
+  line-height: 0.91;
+  letter-spacing: -0.068em;
+  text-wrap: balance;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.2);
+}
+
+.opening-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-top: clamp(26px, 4vh, 42px);
+}
+
+.opening-actions .primary-cta,
+.opening-actions .text-link {
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 24px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+.opening-actions .primary-cta {
+  background: var(--white);
+  color: var(--navy-deep);
+}
+
+.opening-actions .text-link {
+  background: rgba(8, 12, 29, 0.25);
+  color: var(--white);
+  backdrop-filter: blur(8px);
+}
+
+/* Static-site equivalent of the requested Marquee component. */
+.hero-partners {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(6, 9, 22, 0.38);
+  backdrop-filter: blur(10px);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 5%, #000 95%, transparent 100%);
+}
+
+.hero-partners-track {
+  width: max-content;
+  max-width: none;
+  display: flex;
+  flex: 0 0 auto;
+  animation: heroPartnersMarquee 28s linear infinite;
+  will-change: transform;
+}
+
+.hero-partners-group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 18px;
+  padding-right: 18px;
+}
+
+.hero-partners-group span {
+  width: 142px;
+  height: 52px;
+  display: grid;
+  flex: 0 0 142px;
+  place-items: center;
+  padding: 10px 17px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.hero-partners .hero-partners-group img {
+  width: auto;
+  height: auto;
+  max-width: 108px;
+  max-height: 28px;
+  object-fit: contain;
+}
+
+@keyframes heroPartnersMarquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+
+/* Photographic horizontal story cards. */
+.solution-scroll {
+  position: relative;
+  height: 340svh;
+  padding: 0;
+  background: var(--navy-deep);
+}
+
+.solution-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.solution-track {
+  width: max-content;
+  height: 100%;
+  display: flex;
+  gap: 0;
+  overflow: visible;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.solution-panel {
+  position: relative;
+  isolation: isolate;
+  width: 100vw;
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  flex: 0 0 100vw;
+  place-items: end start;
+  padding: clamp(34px, 7vw, 104px);
+  overflow: hidden;
+  border-radius: 0;
+  color: var(--white);
+  background-position: center;
+  background-size: cover;
+}
+
+.solution-panel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background:
+    linear-gradient(0deg, rgba(5, 9, 27, 0.84) 0%, rgba(5, 9, 27, 0.08) 70%),
+    linear-gradient(90deg, rgba(5, 9, 27, 0.58), transparent 65%);
+}
+
+.solution-panel-auto { background-image: url("assets/insurance-auto.jpg"); }
+.solution-panel-home { background-image: url("assets/insurance-home.jpg"); }
+.solution-panel-life { background-image: url("assets/insurance-life.jpg"); }
+.solution-panel-health { background-image: url("assets/insurance-health.jpg"); }
+
+.solution-panel p {
+  position: relative;
+  z-index: 1;
+  width: auto;
+  max-width: 9ch;
+  margin: 0;
+  color: var(--white);
+  font-size: clamp(4.6rem, 10vw, 10.5rem);
+  line-height: 0.88;
+  letter-spacing: -0.068em;
+  text-align: left;
+  text-wrap: balance;
+  text-shadow: 0 3px 30px rgba(0, 0, 0, 0.35);
+}
+
+.solution-progress {
+  z-index: 2;
+}
+
+/* Founder section: copy on the left, the untouched original portrait on the right. */
+.about {
+  padding: clamp(82px, 10vw, 142px) 0;
+  background: var(--navy);
+}
+
+.about::before {
+  display: none;
+}
+
+.about-grid-founder {
+  width: min(1280px, calc(100% - 48px));
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(330px, 0.72fr);
+  grid-template-areas: none;
+  align-items: center;
+  gap: clamp(52px, 8vw, 118px);
+}
+
+.about-owner {
+  grid-area: auto;
+}
+
+.about-owner-heading {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.about-owner-heading h2 {
+  max-width: 12ch;
+  margin: 0 0 30px;
+  color: var(--white);
+  font-size: clamp(3.1rem, 5.7vw, 6rem);
+  line-height: 0.93;
+}
+
+.about-owner > p {
+  max-width: 640px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+}
+
+.about-facts {
+  margin-top: 38px;
+}
+
+.about-founder-photo {
+  width: min(100%, 520px);
+  margin: 0;
+  justify-self: end;
+  align-self: center;
+}
+
+.about-founder-photo img {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 0;
+}
+
+/* Keep the remaining site on the same light editorial type system. */
+.partners-heading h2,
+.health-brands .partners-heading h2 {
+  font-weight: 400;
+}
+
+.insurance-heading h2 {
+  font-weight: 400;
+}
+
+.whatsapp-float {
+  right: 20px;
+  bottom: 20px;
+  box-shadow: none;
+}
+
+@media (max-width: 1100px) and (min-width: 861px) {
+  .site-header .nav-links {
+    gap: 13px;
+  }
+
+  .site-header .nav-links a {
+    font-size: 0.66rem;
+  }
+
+  .site-header .nav-service {
+    padding-inline: 18px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 860px) {
+  :root {
+    --header-height: 78px;
+  }
+
+  .site-header,
+  .site-header.is-scrolled {
+    padding: 9px 10px 0;
+  }
+
+  .site-header .header-inner,
+  .site-header.is-scrolled .header-inner {
+    width: 100%;
+    min-height: 64px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    padding: 5px 7px 5px 12px;
+  }
+
+  .site-header .brand,
+  .site-header.is-scrolled .brand {
+    width: 78px;
+    height: 46px;
+    grid-column: 1;
+  }
+
+  .site-header .menu-toggle,
+  .site-header:not(.is-scrolled) .menu-toggle,
+  .site-header.is-scrolled .menu-toggle {
+    grid-column: 3;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(16, 28, 78, 0.14);
+    border-radius: 50%;
+    background: var(--white);
+    backdrop-filter: none;
+  }
+
+  .site-header .menu-toggle span,
+  .site-header:not(.is-scrolled) .menu-toggle span,
+  .site-header.is-scrolled .menu-toggle span {
+    background: var(--navy-deep);
+  }
+
+  .menu-open .site-header,
+  .menu-open .site-header.is-scrolled {
+    padding: 9px 10px 0;
+  }
+
+  .menu-open .site-header .header-inner {
+    border-color: transparent;
+    background: transparent;
+    backdrop-filter: none;
+  }
+
+  .menu-open .site-header .menu-toggle {
+    background: var(--white);
+  }
+
+  .menu-open .site-header .menu-toggle span {
+    background: var(--navy-deep) !important;
+  }
+
+  .main-nav.is-open .nav-links a {
+    font-weight: 400;
+  }
+
+  .hero-stage {
+    min-height: 100vh;
+    min-height: 100svh;
+    align-items: end;
+    padding: 112px 20px 116px;
+  }
+
+  .hero-backdrop {
+    object-position: 92% center;
+  }
+
+  .hero-stage::after {
+    background:
+      linear-gradient(0deg, rgba(6, 9, 22, 0.9) 0%, rgba(6, 9, 22, 0.38) 61%, rgba(6, 9, 22, 0.48) 100%),
+      linear-gradient(90deg, rgba(6, 9, 22, 0.62), rgba(6, 9, 22, 0.08));
+  }
+
+  .opening-copy {
+    width: 100%;
+    padding-bottom: 18px;
+  }
+
+  .opening-copy h1 {
+    max-width: 9ch;
+    font-size: clamp(3.35rem, 14.6vw, 5.8rem);
+    line-height: 0.91;
+  }
+
+  .opening-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 26px;
+  }
+
+  .opening-actions .primary-cta,
+  .opening-actions .text-link {
+    min-height: 50px;
+    padding-inline: 12px;
+    font-size: 0.74rem;
+    white-space: nowrap;
+  }
+
+  .hero-partners {
+    height: 82px;
+    padding-block: 12px;
+  }
+
+  .hero-partners-track {
+    animation-duration: 22s;
+  }
+
+  .hero-partners-group {
+    gap: 12px;
+    padding-right: 12px;
+  }
+
+  .hero-partners-group span {
+    width: 118px;
+    height: 46px;
+    flex-basis: 118px;
+    padding: 9px 13px;
+  }
+
+  .hero-partners .hero-partners-group img {
+    max-width: 92px;
+    max-height: 25px;
+  }
+
+  .solution-scroll {
+    height: auto;
+    padding: 20px 0 30px;
+    background: var(--white);
+  }
+
+  .solution-sticky {
+    position: relative;
+    top: auto;
+    height: auto;
+    overflow: visible;
+  }
+
+  .solution-track {
+    width: 100%;
+    height: auto;
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 16px 10px;
+    scroll-padding-inline: 16px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    overscroll-behavior-inline: contain;
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .solution-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .solution-panel {
+    width: min(84vw, 560px);
+    min-height: min(68svh, 590px);
+    height: auto;
+    flex: 0 0 min(84vw, 560px);
+    padding: 26px 22px 32px;
+    border-radius: 22px;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  .solution-panel p {
+    max-width: 8ch;
+    font-size: clamp(3.4rem, 15vw, 5.8rem);
+    line-height: 0.9;
+  }
+
+  .solution-progress {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    left: auto;
+    width: calc(100% - 32px);
+    height: 3px;
+    margin: 3px 16px 0;
+    background: rgba(16, 28, 78, 0.12);
+  }
+
+  .solution-progress span {
+    background: var(--red);
+  }
+
+  .about-grid-founder {
+    width: min(100% - 32px, 720px);
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+
+  .about-owner-heading h2 {
+    max-width: 11ch;
+    font-size: clamp(3.05rem, 13.8vw, 5.4rem);
+  }
+
+  .about-founder-photo {
+    width: 100%;
+    max-width: 520px;
+    justify-self: center;
+  }
+
+  .whatsapp-float {
+    right: max(13px, env(safe-area-inset-right));
+    bottom: max(13px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 430px) {
+  .opening-copy h1 {
+    font-size: clamp(3.05rem, 14.8vw, 4.2rem);
+  }
+
+  .opening-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .opening-actions .primary-cta,
+  .opening-actions .text-link {
+    width: 100%;
+  }
+
+  .solution-panel {
+    min-height: min(64svh, 530px);
+  }
+
+  .about-facts div {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-partners-track {
+    animation-play-state: paused;
+  }
+}

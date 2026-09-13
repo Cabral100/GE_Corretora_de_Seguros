@@ -163,8 +163,11 @@ try {
     title: document.title,
     heading: document.querySelector('h1')?.textContent.trim(),
     overlay: Boolean(document.querySelector('[data-nextjs-dialog], .vite-error-overlay, #webpack-dev-server-client-overlay')),
-    heroLogos: document.querySelectorAll('.hero-logo img').length,
-    heroLogosStatic: Array.from(document.querySelectorAll('.hero-logo')).every((logo) => getComputedStyle(logo).animationName === 'none'),
+    heroLogos: document.querySelectorAll('.hero-partners-group img').length,
+    heroMarquee: getComputedStyle(document.querySelector('.hero-partners-track')).animationName,
+    heroBackdropLoaded: (() => { const image = document.querySelector('.hero-backdrop'); return image.complete && image.naturalWidth > 0; })(),
+    heroBackdropSource: document.querySelector('.hero-backdrop')?.getAttribute('src'),
+    finalStylesheet: Array.from(document.styleSheets).some((sheet) => String(sheet.href || '').includes('final-refresh.css')),
     navOrder: Array.from(document.querySelectorAll('.nav-links a')).map((link) => link.textContent.trim()).join('|'),
     sectionLabels: document.querySelectorAll('.section-kicker, .location-index').length,
     insuranceCodes: document.querySelectorAll('.insurance-code').length,
@@ -172,8 +175,11 @@ try {
   }))()`);
   assert(initial.textLength > 300, "A página abriu sem conteúdo suficiente.");
   assert(initial.heading === "Segurança para o que realmente importa", "O título do hero está incorreto.");
-  assert(initial.heroLogos === 8, "Os logos do hero não foram renderizados.");
-  assert(initial.heroLogosStatic, "Os logos do hero ainda possuem animação contínua.");
+  assert(initial.heroLogos === 16, "A faixa duplicada de logos do hero não foi renderizada.");
+  assert(initial.heroMarquee === "heroPartnersMarquee", "O carrossel infinito de marcas não está ativo.");
+  assert(initial.heroBackdropLoaded, "A fotografia de fundo do hero não carregou.");
+  assert(initial.heroBackdropSource === "assets/hero-family-protection.jpg", "O hero ainda usa a fotografia anterior.");
+  assert(initial.finalStylesheet, "A camada visual final não foi carregada.");
   assert(initial.navOrder === "Home|Seguros|Sobre nós|Plano de saúde|Contato", "A ordem do menu não acompanha as seções.");
   assert(initial.sectionLabels === 0, "Ainda existem rótulos pequenos acima das seções.");
   assert(initial.insuranceCodes === 0, "Ainda existem cápsulas de categoria no carrossel de seguros.");
@@ -206,13 +212,14 @@ try {
   const mobileHeader = await evaluate(session, `(() => {
     window.scrollTo(0, 620);
     return new Promise((resolve) => setTimeout(() => {
-      const rect = document.querySelector('[data-header]').getBoundingClientRect();
-      const style = getComputedStyle(document.querySelector('[data-header]'));
+      const element = document.querySelector('[data-header] .header-inner');
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
       resolve({ top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor });
     }, 320));
   })()`);
-  assert(mobileHeader.top >= 8 && mobileHeader.left === 10 && mobileHeader.width >= 368 && mobileHeader.radius > 20 && mobileHeader.background !== "rgba(0, 0, 0, 0)", "O cabeçalho mobile não assumiu o formato flutuante branco ao rolar.");
-  report.checks.push("cabeçalho mobile flutuante após o scroll");
+  assert(mobileHeader.top >= 8 && mobileHeader.left === 10 && mobileHeader.width >= 368 && mobileHeader.radius > 20 && mobileHeader.background.includes("255, 255, 255"), "O cabeçalho mobile não permaneceu como cápsula branca ao rolar.");
+  report.checks.push("cabeçalho mobile em cápsula branca após o scroll");
   await screenshot(session, "mobile-header-scrolled-final.png");
 
   const form = await evaluate(session, `(() => {
@@ -232,7 +239,7 @@ try {
     const textarea = form.elements.message.getBoundingClientRect();
     return {
       removedCopy: !document.body.innerText.includes('Formulário rápido') && !document.body.innerText.includes('Uma única etapa') && !document.body.innerText.includes('Vamos começar'),
-      opensWhatsapp: String(window.__whatsappTestUrl || '').startsWith('https://wa.me/'),
+      opensWhatsapp: String(window.__whatsappTestUrl || '').startsWith('https://wa.me/5511993135111'),
       preparedMessage: decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Cliente Teste') && decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Quero cobertura completa'),
       fullWidth: button.width >= form.getBoundingClientRect().width - 20,
       afterTextarea: button.top > textarea.bottom
@@ -250,15 +257,44 @@ try {
 
   const horizontal = await evaluate(session, `(() => {
     const section = document.querySelector('[data-horizontal-solutions]');
-    window.scrollTo(0, section.offsetTop + section.offsetHeight * 0.52);
+    section.scrollIntoView({ block: 'start' });
+    const track = section.querySelector('[data-solution-track]');
+    const firstCard = track.querySelector('.solution-panel');
+    const before = track.scrollLeft;
+    track.scrollTo({ left: firstCard.getBoundingClientRect().width + 12, behavior: 'auto' });
     return new Promise((resolve) => setTimeout(() => resolve({
-      transform: getComputedStyle(document.querySelector('[data-solution-track]')).transform,
-      progress: getComputedStyle(document.querySelector('[data-solution-progress]')).transform
-    }), 350));
+      before,
+      after: track.scrollLeft,
+      transform: getComputedStyle(track).transform,
+      snap: getComputedStyle(track).scrollSnapType,
+      background: getComputedStyle(firstCard).backgroundImage,
+      sectionHeight: Math.round(section.getBoundingClientRect().height)
+    }), 450));
   })()`);
-  assert(horizontal.transform !== "none" && !horizontal.transform.includes("matrix(1, 0, 0, 1, 0, 0)"), "A faixa horizontal não respondeu ao scroll.");
-  report.checks.push("faixa horizontal acionada pelo scroll");
+  assert(horizontal.after > horizontal.before && horizontal.transform === "none" && horizontal.snap.includes("x") && horizontal.background.includes("insurance-auto.jpg") && horizontal.sectionHeight < 900, "O carrossel tátil de soluções não ficou fluido no mobile.");
+  report.checks.push("soluções em carrossel tátil, sem travar a rolagem mobile");
   await screenshot(session, "mobile-horizontal-final.png");
+
+  const about = await evaluate(session, `(() => {
+    const section = document.querySelector('#sobre');
+    section.scrollIntoView({ block: 'start' });
+    const founder = section.querySelector('.about-founder-photo img');
+    const copy = section.querySelector('.about-owner');
+    return new Promise((resolve) => setTimeout(() => resolve({
+      ownerClear: section.innerText.includes('Caio é o proprietário da G.E. Corretora de Seguros.'),
+      oldTitleRemoved: !section.innerText.includes('Uma corretora próxima, do primeiro contato à escolha.'),
+      oldPartnershipRemoved: !section.querySelector('.about-partnership'),
+      imageLoaded: founder.complete && founder.naturalWidth === 853 && founder.naturalHeight === 1280,
+      portraitUncropped: Math.abs(founder.getBoundingClientRect().width / founder.getBoundingClientRect().height - 853 / 1280) < 0.01,
+      copyBeforePhoto: copy.getBoundingClientRect().top < founder.getBoundingClientRect().top
+    }), 400));
+  })()`);
+  assert(Object.values(about).every(Boolean), `A seção sobre não preservou o retrato e a hierarquia pedidos: ${JSON.stringify(about)}`);
+  report.checks.push("seção sobre com texto primeiro e retrato original completo do Caio");
+  await screenshot(session, "mobile-about-final.png");
+  await evaluate(session, "document.querySelector('.about-founder-photo').scrollIntoView({ block: 'center' })");
+  await sleep(350);
+  await screenshot(session, "mobile-caio-original-final.png");
 
   const autoShopping = await evaluate(session, `(() => {
     document.documentElement.style.scrollBehavior = 'auto';
@@ -367,7 +403,7 @@ try {
   const desktopRefinements = await evaluate(session, `(() => {
     window.scrollTo(0, 700);
     return new Promise((resolve) => setTimeout(() => {
-      const header = document.querySelector('[data-header]');
+      const header = document.querySelector('[data-header] .header-inner');
       const headerRect = header.getBoundingClientRect();
       const autoPhoto = document.querySelector('.autoshopping-photo img');
       const c6 = document.querySelector('.partner-card-c6 img');
@@ -376,6 +412,7 @@ try {
         headerLeft: Math.round(headerRect.left),
         headerWidth: Math.round(headerRect.width),
         headerRadius: parseFloat(getComputedStyle(header).borderTopLeftRadius),
+        headerBackground: getComputedStyle(header).backgroundColor,
         autoPhotoLoaded: autoPhoto.complete && autoPhoto.naturalWidth > 800,
         autoPhotoRatio: autoPhoto.naturalWidth / Math.max(1, autoPhoto.naturalHeight),
         c6Filter: getComputedStyle(c6).filter,
@@ -383,7 +420,7 @@ try {
       });
     }, 500));
   })()`);
-  assert(desktopRefinements.headerTop >= 12 && desktopRefinements.headerLeft >= 15 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25, "O cabeçalho desktop não ficou largo e flutuante após o scroll.");
+  assert(desktopRefinements.headerTop >= 9 && desktopRefinements.headerLeft >= 19 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25 && desktopRefinements.headerBackground.includes("255, 255, 255"), "O cabeçalho desktop não ficou largo, branco e flutuante após o scroll.");
   assert(desktopRefinements.autoPhotoLoaded && desktopRefinements.autoPhotoRatio > 2.2, "A foto editorial do AutoShopping não foi carregada.");
   assert(desktopRefinements.c6Filter.includes("brightness(0)") && desktopRefinements.c6Opacity === "1", "O logo C6 Seg continua sem contraste.");
   report.checks.push("foto do AutoShopping, C6 Seg e cabeçalho desktop refinados");
@@ -403,6 +440,26 @@ try {
   await evaluate(session, "document.querySelector('#saude').scrollIntoView({ block: 'center' })");
   await sleep(900);
   await screenshot(session, "desktop-health-mechanism-final.png");
+
+  const desktopAbout = await evaluate(session, `(() => {
+    const section = document.querySelector('#sobre');
+    section.scrollIntoView({ block: 'center' });
+    return new Promise((resolve) => setTimeout(() => {
+      const copy = section.querySelector('.about-owner').getBoundingClientRect();
+      const photo = section.querySelector('.about-founder-photo img');
+      const photoRect = photo.getBoundingClientRect();
+      resolve({
+        copyLeft: Math.round(copy.left),
+        photoLeft: Math.round(photoRect.left),
+        naturalWidth: photo.naturalWidth,
+        naturalHeight: photo.naturalHeight,
+        renderedRatio: photoRect.width / photoRect.height
+      });
+    }, 500));
+  })()`);
+  assert(desktopAbout.copyLeft < desktopAbout.photoLeft && desktopAbout.naturalWidth === 853 && desktopAbout.naturalHeight === 1280 && Math.abs(desktopAbout.renderedRatio - 853 / 1280) < 0.01, "O retrato original do Caio não ficou inteiro à direita no desktop.");
+  report.checks.push("retrato original do Caio inteiro à direita no desktop");
+  await screenshot(session, "desktop-about-caio-final.png");
 
   assert(report.consoleErrors.length === 0, `Erros de console: ${report.consoleErrors.join(" | ")}`);
   assert(report.failedLocalResources.length === 0, `Recursos locais com falha: ${report.failedLocalResources.join(" | ")}`);

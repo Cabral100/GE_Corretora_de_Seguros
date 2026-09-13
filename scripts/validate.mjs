@@ -6,10 +6,13 @@ const requiredFiles = [
   "index.html",
   "styles.css",
   "enhancements.css",
+  "final-refresh.css",
   "app.js",
   "site-config.js",
   "api/lead.js",
   "assets/ge-corretora-logo.jpg",
+  "assets/hero-family-protection.jpg",
+  "assets/caio-original.png",
   "assets/incrivel-autoshopping-original.jpg",
   "assets/favicon.svg",
   "assets/apple-touch-icon.png",
@@ -32,6 +35,7 @@ for (const file of requiredFiles) {
 const html = await readFile(new URL("index.html", root), "utf8");
 const css = await readFile(new URL("styles.css", root), "utf8");
 const enhancements = await readFile(new URL("enhancements.css", root), "utf8");
+const finalRefresh = await readFile(new URL("final-refresh.css", root), "utf8");
 const js = await readFile(new URL("app.js", root), "utf8");
 
 const checks = [
@@ -47,10 +51,10 @@ for (const [pattern, minimum, message] of checks) {
 }
 
 if ((html.match(/<h1\b/g) || []).length !== 1) failures.push("Quantidade inválida de h1");
-if (/lorem ipsum|REMOVE_THIS|blank-app-v1/i.test(`${html}${css}${enhancements}${js}`)) failures.push("Placeholder encontrado");
+if (/lorem ipsum|REMOVE_THIS|blank-app-v1/i.test(`${html}${css}${enhancements}${finalRefresh}${js}`)) failures.push("Placeholder encontrado");
 if (/src=""/.test(html)) failures.push("Imagem com src vazio");
-if (/h-screen/.test(`${html}${css}${enhancements}${js}`)) failures.push("Classe h-screen encontrada");
-if (!/@media \(prefers-reduced-motion: reduce\)/.test(`${css}${enhancements}`)) failures.push("Fallback de movimento reduzido ausente");
+if (/h-screen/.test(`${html}${css}${enhancements}${finalRefresh}${js}`)) failures.push("Classe h-screen encontrada");
+if (!/@media \(prefers-reduced-motion: reduce\)/.test(`${css}${enhancements}${finalRefresh}`)) failures.push("Fallback de movimento reduzido ausente");
 
 const localSources = Array.from(html.matchAll(/(?:src|href)="((?:\.\/)?assets\/[^"?#]+)"/g), (match) => match[1]);
 for (const source of new Set(localSources)) {
@@ -72,7 +76,7 @@ for (const name of assetNames) {
   const info = await stat(new URL(`assets/${name}`, root));
   if (info.isDirectory()) continue;
   if (name === "og-cover.svg") continue;
-  const referenced = html.includes(`assets/${name}`) || css.includes(`assets/${name}`) || enhancements.includes(`assets/${name}`);
+  const referenced = html.includes(`assets/${name}`) || css.includes(`assets/${name}`) || enhancements.includes(`assets/${name}`) || finalRefresh.includes(`assets/${name}`);
   if (!referenced && !name.startsWith("icon-") && name !== "apple-touch-icon.png") {
     failures.push(`Ativo sem referência: ${name}`);
   }
