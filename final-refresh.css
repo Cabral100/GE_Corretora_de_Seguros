@@ -734,3 +734,378 @@ button,
     animation-play-state: paused;
   }
 }
+
+/* ==========================================================================
+   USER-REQUESTED SPECIFIC OVERRIDES AND FIXES
+   ========================================================================== */
+
+/* 1. HERO INFINITY MARQUEE (Marquee on top of image, vertical dividers on ALL items) */
+.hero-partners {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 5 !important;
+  background: transparent !important;
+  border-top: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  padding: 15px 0 !important;
+  height: auto !important;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 6%, #000 94%, transparent 100%) !important;
+}
+
+.hero-partners-track {
+  animation: heroPartnersMarquee 38s linear infinite !important;
+}
+
+.hero-partners-group {
+  gap: 0 !important;
+  padding-right: 0 !important;
+  align-items: center !important;
+  display: flex !important;
+}
+
+.hero-partners-group span {
+  background: transparent !important;
+  border: none !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 4px 28px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 110px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex: 0 0 auto !important;
+}
+
+.hero-partners-group span:last-child {
+  border-right: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.hero-partners .hero-partners-group img,
+.hero-partners-group img {
+  max-width: 130px !important;
+  max-height: 40px !important;
+  width: auto !important;
+  height: auto !important;
+  object-fit: contain !important;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.75)) !important;
+  transition: transform 0.2s ease !important;
+}
+
+/* 2. HEADER - INITIAL WHITE CAPSULE, SCROLLED DARK GLASS, CLEAN TEXT TRANSITION */
+.site-header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  transition: padding 0.3s ease, background 0.3s ease !important;
+}
+
+/* Initial State (Before Scroll / Top of Page): White capsule */
+.site-header:not(.is-scrolled) {
+  background: transparent !important;
+  padding-top: 12px !important;
+}
+
+.site-header:not(.is-scrolled) .header-inner {
+  background: rgba(255, 255, 255, 0.96) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+.site-header:not(.is-scrolled) .nav-links a {
+  color: #0b1a30 !important;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+.site-header:not(.is-scrolled) .nav-links a:hover,
+.site-header:not(.is-scrolled) .nav-links a[aria-current="true"] {
+  color: #0b1a30 !important;
+}
+
+/* Scrolled State (After Scroll): Dark glass style */
+.site-header.is-scrolled {
+  background: transparent !important;
+  padding-top: 8px !important;
+}
+
+.site-header.is-scrolled .header-inner {
+  background: rgba(6, 9, 22, 0.65) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35) !important;
+}
+
+.site-header.is-scrolled .nav-links a {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+  font-weight: 500 !important;
+}
+
+.site-header.is-scrolled .nav-links a:hover,
+.site-header.is-scrolled .nav-links a[aria-current="true"] {
+  color: #ffffff !important;
+}
+
+/* CTA Service Button - Same Red Button in Both Header States */
+.site-header .nav-service,
+.site-header:not(.is-scrolled) .nav-service,
+.site-header.is-scrolled .nav-service {
+  background: #d9252e !important;
+  color: #ffffff !important;
+  border: none !important;
+  box-shadow: 0 4px 14px rgba(217, 37, 46, 0.3) !important;
+  font-weight: 600 !important;
+}
+
+.site-header .nav-service:hover,
+.site-header:not(.is-scrolled) .nav-service:hover,
+.site-header.is-scrolled .nav-service:hover {
+  background: #b81c24 !important;
+}
+
+/* 3. MOBILE STICKY HEADER, MENU TOGGLE & OPEN MENU SEAMLESS BG */
+@media (max-width: 860px) {
+  .site-header,
+  .site-header.is-scrolled {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    padding: 0 !important;
+  }
+
+  .site-header .header-inner,
+  .site-header.is-scrolled .header-inner {
+    width: 100% !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    padding: 10px 16px !important;
+  }
+
+  .site-header:not(.is-scrolled) .header-inner {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .site-header.is-scrolled .header-inner {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  /* Hamburger Menu Toggle Button - Clean & Visible */
+  .menu-toggle {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 50% !important;
+    border: none !important;
+    background: transparent !important;
+    cursor: pointer !important;
+    z-index: 10001 !important;
+  }
+
+  .site-header:not(.is-scrolled) .menu-toggle span {
+    background: #0b1a30 !important;
+    width: 22px !important;
+    height: 2.5px !important;
+    display: block !important;
+    margin: 3px 0 !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+  }
+
+  .site-header.is-scrolled .menu-toggle span {
+    background: #ffffff !important;
+    width: 22px !important;
+    height: 2.5px !important;
+    display: block !important;
+    margin: 3px 0 !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+  }
+
+  /* When Mobile Menu is OPEN - Seamless single dark background */
+  .menu-open .site-header,
+  .menu-open .site-header.is-scrolled {
+    background: #060916 !important;
+  }
+
+  .menu-open .site-header .header-inner,
+  .menu-open .site-header.is-scrolled .header-inner {
+    background: #060916 !important;
+    border-bottom: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .menu-open .menu-toggle span {
+    background: #ffffff !important;
+  }
+
+  .main-nav.is-open {
+    position: fixed !important;
+    top: 64px !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 64px) !important;
+    height: calc(100dvh - 64px) !important;
+    background: #060916 !important;
+    z-index: 9999 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding: 24px 20px !important;
+    overflow-y: auto !important;
+    border-top: none !important;
+  }
+
+  .main-nav.is-open .nav-links {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .main-nav.is-open .nav-links a {
+    color: #ffffff !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    text-align: center !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    padding: 12px 20px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    width: 100% !important;
+  }
+
+  .main-nav.is-open .mobile-nav-cta {
+    width: 100% !important;
+    max-width: 320px !important;
+    margin-top: 12px !important;
+    font-size: 1.1rem !important;
+    background: #d9252e !important;
+    color: #ffffff !important;
+  }
+}
+
+/* 4. CAROUSEL WIDTH (Wider on sides) */
+.insurance-shell,
+.insurance-carousel,
+.carousel-shell {
+  width: min(1560px, 96vw) !important;
+  max-width: 96vw !important;
+  margin-inline: auto !important;
+}
+
+/* 5. HEALTH CARE (#saude) - FULL IMAGE BACKGROUND WITHOUT BLUE CONTAINER BOX */
+#saude.health,
+.health {
+  position: relative !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  margin-right: calc(50% - 50vw) !important;
+  min-height: 85vh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 90px 0 !important;
+  overflow: hidden !important;
+  background: #060916 !important;
+}
+
+.health::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  background: linear-gradient(90deg, rgba(6, 9, 22, 0.8) 0%, rgba(6, 9, 22, 0.5) 50%, rgba(6, 9, 22, 0.2) 100%) !important;
+  pointer-events: none !important;
+}
+
+.health-stage-media {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  z-index: 1 !important;
+  border-radius: 0 !important;
+  filter: brightness(0.7) !important;
+}
+
+.health-grid.health-stage,
+.health-stage,
+.health-grid {
+  position: relative !important;
+  z-index: 3 !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  padding: 0 4vw !important;
+  border-radius: 0 !important;
+  overflow: visible !important;
+  box-shadow: none !important;
+  border: none !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 40px !important;
+  align-items: center !important;
+}
+
+.health-stage::after {
+  display: none !important;
+}
+
+/* Completely remove blue card container box behind text */
+.health-copy {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  color: #ffffff !important;
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.health-copy h2 {
+  color: #ffffff !important;
+  font-size: clamp(2.2rem, 4vw, 3.2rem) !important;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7) !important;
+}
+
+.health-copy p {
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-size: 1.15rem !important;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.7) !important;
+}
+
+.health-steps {
+  position: relative !important;
+  z-index: 3 !important;
+}

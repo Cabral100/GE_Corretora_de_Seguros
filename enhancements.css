@@ -3230,3 +3230,764 @@
     min-height: min(66svh, 570px);
   }
 }
+
+/* =====================================================================
+   CORREÇÕES FINAIS v2 — setembro 2026
+   ===================================================================== */
+
+/* ═══════════════════════════════════════════════════
+   1. HEADER — transparente no topo, navy ao scrollar
+   ═══════════════════════════════════════════════════ */
+
+/* Estado inicial: totalmente transparente */
+.site-header {
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+}
+
+/* Links e botões no header transparente (sobre a foto dark) */
+.site-header:not(.is-scrolled) .nav-links a {
+  color: var(--white) !important;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+}
+
+.site-header:not(.is-scrolled) .nav-service {
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: var(--navy-deep) !important;
+  border: none !important;
+}
+
+/* Estado scrolled desktop: capsule navy escuro */
+.site-header.is-scrolled {
+  top: 14px !important;
+  left: max(16px, calc((100vw - 1440px) / 2)) !important;
+  width: min(1440px, calc(100% - 32px)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 999px !important;
+  background: rgba(16, 28, 78, 0.96) !important;
+  box-shadow: 0 10px 40px rgba(6, 11, 38, 0.36) !important;
+  backdrop-filter: blur(18px) saturate(130%) !important;
+}
+
+.site-header.is-scrolled .nav-links a {
+  color: var(--white) !important;
+  text-shadow: none !important;
+}
+
+.site-header.is-scrolled .nav-service {
+  background: var(--red) !important;
+  color: var(--white) !important;
+  border: none !important;
+}
+
+/* Mobile: header retangular — sem cápsula */
+@media (max-width: 860px) {
+  .site-header,
+  .site-header.is-scrolled {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: none !important;
+  }
+
+  .site-header.is-scrolled {
+    background: rgba(16, 28, 78, 0.97) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+
+  /* Botão hamburguer no estado transparente (topo) */
+  .site-header:not(.is-scrolled) .menu-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    background: rgba(9, 11, 20, 0.24) !important;
+    backdrop-filter: blur(8px);
+  }
+
+  .site-header:not(.is-scrolled) .menu-toggle span {
+    background: var(--white) !important;
+  }
+
+  /* Botão hamburguer no estado scrolled */
+  .site-header.is-scrolled .menu-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .site-header.is-scrolled .menu-toggle span {
+    background: var(--white) !important;
+  }
+
+  /* Quando o menu está aberto: hamburguer visível */
+  .menu-open .site-header,
+  .menu-open .site-header.is-scrolled {
+    background: transparent !important;
+  }
+
+  .menu-open .site-header .menu-toggle {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+  }
+
+  .menu-open .site-header .menu-toggle span {
+    background: var(--white) !important;
+  }
+
+  /* ─── Menu mobile: fullscreen navy com links visíveis ─── */
+  .main-nav {
+    position: fixed !important;
+    z-index: 9999 !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100dvh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    padding: 80px 0 40px !important;
+    background: rgb(16, 28, 78) !important;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 260ms ease, transform 260ms ease;
+    inset: 0;
+  }
+
+  .main-nav.is-open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
+  .main-nav .mobile-nav-brand {
+    display: flex !important;
+    justify-content: center !important;
+    margin-bottom: 36px !important;
+  }
+
+  .main-nav .mobile-nav-brand img {
+    width: 100px !important;
+    height: auto !important;
+    border-radius: 8px !important;
+    opacity: 1 !important;
+  }
+
+  .main-nav .nav-links {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 0 !important;
+  }
+
+  .main-nav .nav-links a {
+    display: block !important;
+    padding: 17px 32px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--white) !important;
+    font-size: 1.15rem !important;
+    font-weight: 500 !important;
+    letter-spacing: -0.01em !important;
+    text-align: center !important;
+    text-shadow: none !important;
+    text-decoration: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  .main-nav .nav-links a:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  }
+
+  .main-nav .mobile-nav-cta {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 28px !important;
+    min-height: 52px !important;
+    padding: 0 38px !important;
+    border-radius: 999px !important;
+    background: var(--red) !important;
+    color: var(--white) !important;
+    font-size: 0.92rem !important;
+    font-weight: 600 !important;
+    border: none !important;
+  }
+
+  .main-nav .mobile-nav-note {
+    display: block !important;
+    margin-top: 16px !important;
+    color: rgba(255, 255, 255, 0.48) !important;
+    font-size: 0.72rem !important;
+    text-align: center !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   2. BRAND TICKER (marcas infinitas) — logos visíveis
+   Usa mix-blend-mode:screen no fundo escuro:
+   branco permanece branco, preto some no escuro
+   ═══════════════════════════════════════════════════ */
+
+.hero-partners {
+  background: #05071a !important;
+  border-top: 1px solid rgba(255,255,255,0.07) !important;
+  padding-block: 14px !important;
+}
+
+.hero-partners-group {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+}
+
+.hero-partners-group span {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  height: 42px !important;
+  padding: 0 24px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.hero-partners-group span + span {
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.hero-partners-group img {
+  display: block !important;
+  width: auto !important;
+  height: 26px !important;
+  max-width: 100px !important;
+  max-height: 26px !important;
+  object-fit: contain !important;
+  /* mix-blend-mode screen: funciona com logos de fundo branco E transparente */
+  mix-blend-mode: screen !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 860px) {
+  .hero-partners-group span {
+    height: 36px !important;
+    padding: 0 16px !important;
+  }
+
+  .hero-partners-group img {
+    height: 20px !important;
+    max-width: 80px !important;
+    max-height: 20px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   3. SOBRE NÓS — fundo branco, textos navy/muted
+   ═══════════════════════════════════════════════════ */
+
+.about {
+  background: var(--white) !important;
+  color: var(--text) !important;
+}
+
+.about::before {
+  display: none !important;
+}
+
+/* Título */
+.about-owner-heading h2,
+#about-title {
+  color: var(--navy) !important;
+}
+
+/* Parágrafos */
+.about-owner > p {
+  color: var(--muted) !important;
+}
+
+/* O <strong> dentro dos parágrafos estava branco (herdado da versão navy) */
+.about-owner > p strong,
+.about-copy strong {
+  color: var(--navy-deep) !important;
+  font-weight: 700 !important;
+}
+
+/* DL de fatos */
+.about-facts {
+  border-top: 1px solid var(--line) !important;
+  color: var(--text) !important;
+}
+
+.about-facts div {
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.about-facts dt {
+  color: var(--muted) !important;
+}
+
+.about-facts dd {
+  color: var(--navy) !important;
+  font-weight: 600 !important;
+}
+
+/* Foto do fundador */
+.about-founder-photo img {
+  border-radius: 18px !important;
+  box-shadow: 0 24px 72px rgba(16, 28, 78, 0.1) !important;
+}
+
+/* ═══════════════════════════════════════════════════
+   4. SEÇÃO SAÚDE — foto ocupa a tela toda
+   ═══════════════════════════════════════════════════ */
+
+.health {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.health-grid.health-stage {
+  position: relative !important;
+  width: 100% !important;
+  min-height: 100svh !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.52fr) !important;
+  gap: clamp(48px, 8vw, 120px) !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  padding: clamp(120px, 14vh, 180px) max(28px, calc((100vw - 1440px) / 2 + 48px)) clamp(80px, 10vh, 130px) !important;
+  border-radius: 0 !important;
+  background: var(--navy-deep) !important;
+  isolation: isolate !important;
+}
+
+.health-stage-media {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: -2 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.health-stage::after {
+  background:
+    linear-gradient(90deg, rgba(5, 10, 31, 0.93) 0%, rgba(5, 10, 31, 0.72) 46%, rgba(5, 10, 31, 0.28) 100%),
+    linear-gradient(0deg, rgba(5, 10, 31, 0.48), rgba(5, 10, 31, 0.04)) !important;
+}
+
+@media (max-width: 860px) {
+  .health-grid.health-stage {
+    min-height: 100svh !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    padding: 100px 24px 64px !important;
+    border-radius: 0 !important;
+  }
+
+  .health-stage-media {
+    object-position: 62% center !important;
+  }
+
+  .health-stage::after {
+    background: linear-gradient(0deg, rgba(5, 10, 31, 0.97) 0%, rgba(5, 10, 31, 0.78) 58%, rgba(5, 10, 31, 0.44) 100%) !important;
+  }
+
+  .health-stage .health-copy h2 {
+    font-size: clamp(3.1rem, 11vw, 5.2rem) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .health-grid.health-stage {
+    padding: 88px 20px 56px !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   5. SOLUTION PANELS — fundo fotográfico
+   ═══════════════════════════════════════════════════ */
+
+.solution-panel-travel {
+  background-image: url("assets/insurance-travel.jpg") !important;
+}
+
+.solution-panel-auto,
+.solution-panel-travel,
+.solution-panel-life,
+.solution-panel-health {
+  background-color: var(--navy-deep) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  color: var(--white) !important;
+}
+
+   1. Header mobile sem border-radius + cor navy correta
+   2. Marcas hero sem fundo branco (apenas logos)
+   3. Sobre nós com fundo branco
+   4. Seção saúde com foto ocupando tela toda (full-bleed)
+   5. Links do menu mobile visíveis
+   ===================================================================== */
+
+/* ── 1. HEADER: cor navy quando scrolled, sem border-radius no mobile ── */
+.site-header,
+.site-header.is-scrolled {
+  border-bottom-color: transparent;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.site-header:not(.is-scrolled) .nav-links a {
+  color: var(--white);
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.32);
+}
+
+.site-header:not(.is-scrolled) .nav-service {
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--navy-deep);
+}
+
+/* Scrolled: fundo navy sólido como na referência */
+.site-header.is-scrolled {
+  background: var(--navy) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  box-shadow: 0 8px 32px rgba(9, 18, 49, 0.28) !important;
+  backdrop-filter: blur(16px) saturate(120%) !important;
+}
+
+.site-header.is-scrolled .nav-links a {
+  color: var(--white) !important;
+  text-shadow: none;
+}
+
+.site-header.is-scrolled .nav-service {
+  background: var(--red) !important;
+  color: var(--white) !important;
+}
+
+/* Mobile: header sem border-radius (retangular completo) */
+@media (max-width: 860px) {
+  .site-header,
+  .site-header.is-scrolled {
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .site-header.is-scrolled {
+    background: var(--navy) !important;
+  }
+
+  .site-header.is-scrolled .header-inner {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    border-radius: 0 !important;
+    border: 0 !important;
+  }
+
+  /* Menu mobile: links visíveis quando abertos */
+  .main-nav {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: var(--navy);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 280ms ease, transform 280ms ease;
+  }
+
+  .main-nav.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .main-nav .nav-links {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+
+  .main-nav .nav-links a {
+    display: block;
+    width: 100%;
+    padding: 18px 32px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--white) !important;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+    text-shadow: none;
+  }
+
+  .main-nav .mobile-nav-brand {
+    display: block;
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .main-nav .mobile-nav-cta {
+    display: block;
+    margin-top: 28px;
+    min-height: 52px;
+    padding: 0 36px;
+    border-radius: 999px;
+    background: var(--red);
+    color: var(--white);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .main-nav .mobile-nav-note {
+    display: block;
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.52);
+    font-size: 0.72rem;
+    text-align: center;
+  }
+
+  /* menu-toggle dentro do header transparente */
+  .site-header:not(.is-scrolled) .menu-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.44);
+    background: rgba(9, 11, 20, 0.22) !important;
+    backdrop-filter: blur(9px);
+  }
+
+  .site-header:not(.is-scrolled) .menu-toggle span {
+    background: var(--white) !important;
+  }
+
+  .site-header.is-scrolled .menu-toggle {
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .site-header.is-scrolled .menu-toggle span {
+    background: var(--white) !important;
+  }
+
+  .menu-open .site-header .menu-toggle {
+    background: transparent !important;
+  }
+
+  .menu-open .site-header .menu-toggle span {
+    background: var(--white) !important;
+  }
+}
+
+/* ── 2. MARCAS HERO: apenas logos, sem pill branca ── */
+.hero-partners-group span {
+  width: auto !important;
+  height: 44px !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 16px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+}
+
+.hero-partners-group img {
+  width: auto !important;
+  height: 28px !important;
+  max-width: 110px !important;
+  max-height: 28px !important;
+  object-fit: contain !important;
+  filter: brightness(0) invert(1) !important;
+  opacity: 0.85;
+}
+
+/* separador entre logos */
+.hero-partners-group span + span {
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+@media (max-width: 860px) {
+  .hero-partners-group span {
+    height: 36px !important;
+    padding: 0 12px !important;
+  }
+
+  .hero-partners-group img {
+    height: 22px !important;
+    max-width: 88px !important;
+    max-height: 22px !important;
+  }
+}
+
+/* ── 3. SOBRE NÓS: fundo branco ── */
+.about,
+.about.is-visible {
+  background: var(--white) !important;
+  color: var(--text) !important;
+}
+
+.about-owner-heading h2,
+.about::before {
+  display: none !important;
+}
+
+.about-owner-heading h2 {
+  display: block !important;
+  color: var(--navy) !important;
+}
+
+.about-owner > p {
+  color: var(--muted) !important;
+}
+
+.about-facts dt {
+  color: var(--muted) !important;
+}
+
+.about-facts dd {
+  color: var(--navy) !important;
+}
+
+/* ── 4. SEÇÃO SAÚDE: foto ocupa a tela toda (full-bleed) ── */
+.health {
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.health-grid.health-stage {
+  position: relative;
+  width: 100% !important;
+  min-height: 100svh !important;
+  grid-template-columns: minmax(0, 0.9fr) minmax(300px, 0.55fr) !important;
+  gap: clamp(48px, 8vw, 120px) !important;
+  align-items: center !important;
+  overflow: hidden !important;
+  padding: clamp(120px, 14vh, 180px) max(28px, calc((100vw - 1440px) / 2 + 48px)) clamp(80px, 10vh, 130px) !important;
+  border-radius: 0 !important;
+  background: var(--navy-deep) !important;
+  isolation: isolate;
+}
+
+.health-stage-media {
+  position: absolute;
+  inset: 0 !important;
+  z-index: -2 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+}
+
+.health-stage::after {
+  background:
+    linear-gradient(90deg, rgba(5, 10, 31, 0.92) 0%, rgba(5, 10, 31, 0.72) 47%, rgba(5, 10, 31, 0.32) 100%),
+    linear-gradient(0deg, rgba(5, 10, 31, 0.42), rgba(5, 10, 31, 0.06)) !important;
+}
+
+@media (max-width: 860px) {
+  .health-grid.health-stage {
+    min-height: 100svh !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+    padding: clamp(100px, 14vh, 150px) 24px clamp(60px, 8vh, 100px) !important;
+    border-radius: 0 !important;
+  }
+
+  .health-stage-media {
+    object-position: 62% center !important;
+  }
+
+  .health-stage::after {
+    background: linear-gradient(0deg, rgba(5, 10, 31, 0.96) 0%, rgba(5, 10, 31, 0.77) 60%, rgba(5, 10, 31, 0.45) 100%) !important;
+  }
+
+  .health-stage .health-copy h2 {
+    font-size: clamp(3.2rem, 11vw, 5.2rem) !important;
+  }
+}
+
+@media (max-width: 620px) {
+  .health-grid.health-stage {
+    padding: 100px 20px 60px !important;
+  }
+}
+
+/* ── Painel Viagem para o solution-scroll ── */
+.solution-panel-travel {
+  background-image: url("assets/insurance-travel.jpg");
+}
+
+/* Sobrescrever paleta de cores do solution-scroll antigo p/ nova versão fotográfica */
+.solution-panel-travel,
+.solution-panel-auto,
+.solution-panel-life,
+.solution-panel-health {
+  background-color: var(--navy-deep);
+  background-size: cover;
+  background-position: center;
+  color: var(--white) !important;
+}
+
+/* ── Seção "Sobre nós" — fundo branco e cores adaptadas ── */
+.about {
+  background: var(--white) !important;
+  color: var(--text) !important;
+}
+
+.about-owner-heading h2 {
+  color: var(--navy) !important;
+}
+
+.about-owner > p {
+  color: var(--muted) !important;
+}
+
+.about-facts {
+  border-top-color: var(--line) !important;
+}
+
+.about-facts div {
+  border-bottom-color: var(--line) !important;
+}
+
+.about-facts dt {
+  color: var(--muted) !important;
+}
+
+.about-facts dd {
+  color: var(--navy) !important;
+  font-weight: 600;
+}
+
+.about::before {
+  display: none !important;
+}
+
+/* Foto do fundador permanece integrada */
+.about-founder-photo img {
+  border-radius: 18px !important;
+  box-shadow: 0 30px 80px rgba(16, 28, 78, 0.12) !important;
+}

@@ -165,24 +165,29 @@ try {
     overlay: Boolean(document.querySelector('[data-nextjs-dialog], .vite-error-overlay, #webpack-dev-server-client-overlay')),
     heroLogos: document.querySelectorAll('.hero-partners-group img').length,
     heroMarquee: getComputedStyle(document.querySelector('.hero-partners-track')).animationName,
+    heroRailBackground: getComputedStyle(document.querySelector('.hero-partners')).backgroundColor,
+    heroLogoBackground: getComputedStyle(document.querySelector('.hero-partners-group span')).backgroundColor,
     heroBackdropLoaded: (() => { const image = document.querySelector('.hero-backdrop'); return image.complete && image.naturalWidth > 0; })(),
     heroBackdropSource: document.querySelector('.hero-backdrop')?.getAttribute('src'),
     finalStylesheet: Array.from(document.styleSheets).some((sheet) => String(sheet.href || '').includes('final-refresh.css')),
     navOrder: Array.from(document.querySelectorAll('.nav-links a')).map((link) => link.textContent.trim()).join('|'),
     sectionLabels: document.querySelectorAll('.section-kicker, .location-index').length,
     insuranceCodes: document.querySelectorAll('.insurance-code').length,
-    brokenImages: Array.from(document.images).filter((image) => image.complete && image.naturalWidth === 0).map((image) => image.getAttribute('src'))
+    brokenImages: Array.from(document.images).filter((image) => image.complete && image.naturalWidth === 0).map((image) => image.getAttribute('src')),
+    autoPopupOpen: Boolean(document.querySelector('#lead-dialog')?.open)
   }))()`);
   assert(initial.textLength > 300, "A página abriu sem conteúdo suficiente.");
   assert(initial.heading === "Segurança para o que realmente importa", "O título do hero está incorreto.");
-  assert(initial.heroLogos === 16, "A faixa duplicada de logos do hero não foi renderizada.");
+  assert(initial.heroLogos === 20, "A faixa duplicada de logos do hero não foi renderizada.");
   assert(initial.heroMarquee === "heroPartnersMarquee", "O carrossel infinito de marcas não está ativo.");
+  assert(initial.heroRailBackground === "rgba(0, 0, 0, 0)" && initial.heroLogoBackground === "rgba(0, 0, 0, 0)", "As marcas do hero ainda estão sobre uma faixa ou cápsula.");
   assert(initial.heroBackdropLoaded, "A fotografia de fundo do hero não carregou.");
   assert(initial.heroBackdropSource === "assets/hero-family-protection.jpg", "O hero ainda usa a fotografia anterior.");
   assert(initial.finalStylesheet, "A camada visual final não foi carregada.");
   assert(initial.navOrder === "Home|Seguros|Sobre nós|Plano de saúde|Contato", "A ordem do menu não acompanha as seções.");
   assert(initial.sectionLabels === 0, "Ainda existem rótulos pequenos acima das seções.");
   assert(initial.insuranceCodes === 0, "Ainda existem cápsulas de categoria no carrossel de seguros.");
+  assert(initial.autoPopupOpen, "O formulário automático não abriu ao carregar o site.");
   assert(!initial.overlay, "Uma sobreposição de erro foi encontrada.");
   assert(initial.brokenImages.length === 0, `Imagens quebradas no hero: ${initial.brokenImages.join(", ")}`);
   report.checks.push("hero mobile carregado");
@@ -198,13 +203,20 @@ try {
   const menu = await evaluate(session, `(() => {
     document.querySelector('[data-menu-toggle]').click();
     const links = Array.from(document.querySelectorAll('.nav-links a'));
+    const toggleStyle = getComputedStyle(document.querySelector('[data-menu-toggle]'));
     return new Promise((resolve) => setTimeout(() => resolve({
       open: document.querySelector('[data-nav]').classList.contains('is-open'),
       links: links.length,
-      visible: links.every((link) => getComputedStyle(link).visibility !== 'hidden')
+      visible: links.every((link) => {
+        const style = getComputedStyle(link);
+        const rect = link.getBoundingClientRect();
+        return style.visibility !== 'hidden' && style.color === 'rgb(255, 255, 255)' && Number(style.opacity) > 0.95 && rect.width > 250 && rect.height > 30;
+      }),
+      toggleRadius: parseFloat(toggleStyle.borderTopLeftRadius),
+      toggleBorder: toggleStyle.borderTopWidth
     }), 650));
   })()`);
-  assert(menu.open && menu.links === 5 && menu.visible, `O menu mobile não abriu corretamente: ${JSON.stringify(menu)}`);
+  assert(menu.open && menu.links === 5 && menu.visible && menu.toggleRadius === 0 && menu.toggleBorder === "0px", `O menu mobile não abriu corretamente: ${JSON.stringify(menu)}`);
   report.checks.push("menu mobile e links escalonados");
   await screenshot(session, "mobile-menu-final-2026.png");
   await evaluate(session, "document.querySelector('[data-menu-toggle]').click()");
@@ -212,14 +224,15 @@ try {
   const mobileHeader = await evaluate(session, `(() => {
     window.scrollTo(0, 620);
     return new Promise((resolve) => setTimeout(() => {
-      const element = document.querySelector('[data-header] .header-inner');
-      const rect = element.getBoundingClientRect();
-      const style = getComputedStyle(element);
-      resolve({ top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor });
+      const outer = document.querySelector('[data-header]');
+      const element = outer.querySelector('.header-inner');
+      const rect = outer.getBoundingClientRect();
+      const style = getComputedStyle(outer);
+      resolve({ top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor, innerRadius: parseFloat(getComputedStyle(element).borderTopLeftRadius) });
     }, 320));
   })()`);
-  assert(mobileHeader.top >= 8 && mobileHeader.left === 10 && mobileHeader.width >= 368 && mobileHeader.radius > 20 && mobileHeader.background.includes("255, 255, 255"), "O cabeçalho mobile não permaneceu como cápsula branca ao rolar.");
-  report.checks.push("cabeçalho mobile em cápsula branca após o scroll");
+  assert(mobileHeader.top === 0 && mobileHeader.left === 0 && mobileHeader.width === 390 && mobileHeader.radius === 0 && mobileHeader.innerRadius === 0 && mobileHeader.background.includes("87, 86, 82"), "O cabeçalho mobile não ficou retangular e escuro após o scroll.");
+  report.checks.push("cabeçalho mobile retangular e escuro após o scroll");
   await screenshot(session, "mobile-header-scrolled-final.png");
 
   const form = await evaluate(session, `(() => {
@@ -268,10 +281,11 @@ try {
       transform: getComputedStyle(track).transform,
       snap: getComputedStyle(track).scrollSnapType,
       background: getComputedStyle(firstCard).backgroundImage,
+      carouselImage: document.querySelector('#seguros .insurance-slide img')?.getAttribute('src'),
       sectionHeight: Math.round(section.getBoundingClientRect().height)
     }), 450));
   })()`);
-  assert(horizontal.after > horizontal.before && horizontal.transform === "none" && horizontal.snap.includes("x") && horizontal.background.includes("insurance-auto.jpg") && horizontal.sectionHeight < 900, "O carrossel tátil de soluções não ficou fluido no mobile.");
+  assert(horizontal.after > horizontal.before && horizontal.transform === "none" && horizontal.snap.includes("x") && horizontal.background.includes("solution-auto.jpg") && horizontal.carouselImage === "assets/insurance-auto.jpg" && horizontal.sectionHeight < 900, "O carrossel tátil de soluções não ficou fluido ou ainda repete a imagem do carrossel principal.");
   report.checks.push("soluções em carrossel tátil, sem travar a rolagem mobile");
   await screenshot(session, "mobile-horizontal-final.png");
 
@@ -281,12 +295,14 @@ try {
     const founder = section.querySelector('.about-founder-photo img');
     const copy = section.querySelector('.about-owner');
     return new Promise((resolve) => setTimeout(() => resolve({
-      ownerClear: section.innerText.includes('Caio é o proprietário da G.E. Corretora de Seguros.'),
+      ownerClear: section.querySelector('h2')?.textContent.trim() === 'Sobre nós' && section.innerText.includes('foi fundada por Caio'),
       oldTitleRemoved: !section.innerText.includes('Uma corretora próxima, do primeiro contato à escolha.'),
+      oldOwnerTitleRemoved: !section.innerText.includes('Caio é o proprietário da G.E. Corretora de Seguros.'),
       oldPartnershipRemoved: !section.querySelector('.about-partnership'),
       imageLoaded: founder.complete && founder.naturalWidth === 853 && founder.naturalHeight === 1280,
       portraitUncropped: Math.abs(founder.getBoundingClientRect().width / founder.getBoundingClientRect().height - 853 / 1280) < 0.01,
-      copyBeforePhoto: copy.getBoundingClientRect().top < founder.getBoundingClientRect().top
+      copyBeforePhoto: copy.getBoundingClientRect().top < founder.getBoundingClientRect().top,
+      whiteBackground: getComputedStyle(section).backgroundColor === 'rgb(255, 255, 255)'
     }), 400));
   })()`);
   assert(Object.values(about).every(Boolean), `A seção sobre não preservou o retrato e a hierarquia pedidos: ${JSON.stringify(about)}`);
@@ -346,7 +362,7 @@ try {
       });
     }, 450));
   })()`);
-  assert(healthMechanism.stageWidth >= 360 && healthMechanism.stageHeight > 700 && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde não ficou integrado corretamente.");
+  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde não ficou full-bleed ou não exibiu todo o conteúdo.");
   report.checks.push("mecanismo de saúde integrado e interativo");
   await screenshot(session, "mobile-health-mechanism-final.png");
 
@@ -375,6 +391,32 @@ try {
   assert(footer.letters === 13 && Number(footer.visible) > 0.9, "O nome animado do rodapé não ficou visível.");
   report.checks.push("wordmark do rodapé alinhado entre linhas");
   await screenshot(session, "mobile-footer-final-2026.png");
+
+  await setViewport(session, 320, 760);
+  await navigate(session, "http://127.0.0.1:4173");
+  await evaluate(session, `(() => {
+    const dialog = document.querySelector('#lead-dialog');
+    if (dialog?.open) dialog.close();
+    document.querySelector('[data-menu-toggle]').click();
+  })()`);
+  await sleep(650);
+  const narrowMobile = await evaluate(session, `(() => {
+    const links = Array.from(document.querySelectorAll('.nav-links a'));
+    const toggle = document.querySelector('[data-menu-toggle]');
+    return {
+      overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
+      headerWidth: Math.round(document.querySelector('[data-header]').getBoundingClientRect().width),
+      toggleRadius: parseFloat(getComputedStyle(toggle).borderTopLeftRadius),
+      linksVisible: links.every((link) => {
+        const style = getComputedStyle(link);
+        const rect = link.getBoundingClientRect();
+        return style.color === 'rgb(255, 255, 255)' && rect.width >= 270 && rect.height > 30;
+      })
+    };
+  })()`);
+  assert(!narrowMobile.overflow && narrowMobile.headerWidth === 320 && narrowMobile.toggleRadius === 0 && narrowMobile.linksVisible, `O menu não ficou íntegro em 320 px: ${JSON.stringify(narrowMobile)}`);
+  report.checks.push("menu e cabeçalho íntegros em 320 px");
+  await screenshot(session, "mobile-320-menu-final.png");
 
   await setViewport(session, 1440, 900);
   await navigate(session, "http://127.0.0.1:4173");
@@ -420,10 +462,10 @@ try {
       });
     }, 500));
   })()`);
-  assert(desktopRefinements.headerTop >= 9 && desktopRefinements.headerLeft >= 19 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25 && desktopRefinements.headerBackground.includes("255, 255, 255"), "O cabeçalho desktop não ficou largo, branco e flutuante após o scroll.");
+  assert(desktopRefinements.headerTop >= 9 && desktopRefinements.headerLeft >= 19 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25 && desktopRefinements.headerBackground.includes("87, 86, 82"), "O cabeçalho desktop não ficou largo, escuro e flutuante após o scroll.");
   assert(desktopRefinements.autoPhotoLoaded && desktopRefinements.autoPhotoRatio > 2.2, "A foto editorial do AutoShopping não foi carregada.");
   assert(desktopRefinements.c6Filter.includes("brightness(0)") && desktopRefinements.c6Opacity === "1", "O logo C6 Seg continua sem contraste.");
-  report.checks.push("foto do AutoShopping, C6 Seg e cabeçalho desktop refinados");
+  report.checks.push("foto do AutoShopping, C6 Seg e cabeçalho desktop escuro refinados");
   await screenshot(session, "desktop-header-scrolled-final.png");
 
   await evaluate(session, `(() => {

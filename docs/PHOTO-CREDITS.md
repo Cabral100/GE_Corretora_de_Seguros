@@ -10,6 +10,15 @@ As imagens abaixo foram obtidas no Unsplash e ficam hospedadas localmente em `as
 - Seguro para Equipamentos — `insurance-equipment.jpg` — https://images.unsplash.com/photo-1496181133206-80ce9b88a853
 - Plano de Saúde — `insurance-health.jpg` — https://images.unsplash.com/photo-1576091160399-112ba8d25d1d
 
+## Fotos dos cards iniciais
+
+Estas fotos são diferentes das usadas no carrossel principal.
+
+- Seguro Auto — `solution-auto.jpg` — https://unsplash.com/photos/man-driving-a-car-on-a-road-Jpqj4r3RMOM
+- Seguro Residencial — `solution-home.jpg` — https://unsplash.com/photos/modern-house-exterior-with-two-tall-windows-and-grey-siding-AkXPbYg_uvw
+- Seguro de Vida — `solution-life.jpg` — https://unsplash.com/photos/a-happy-family-of-three-sitting-on-a-couch-tdkQ_CLYtCc
+- Plano de Saúde — `health-section-bg.png` — imagem criada para a seção, armazenada localmente no projeto.
+
 ## Foto do Incrível AutoShopping
 
 O bloco usa `assets/incrivel-autoshopping-original.jpg`, obtido da matéria “Incrível Auto Shopping, muito mais do que uma loja de carros”, publicada pela Revista Opinião em 24/02/2025. A imagem apresenta Maria Paula Cautela de Almeida, gestora do Incrível Auto Shopping.
