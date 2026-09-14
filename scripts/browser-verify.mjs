@@ -226,13 +226,14 @@ try {
     return new Promise((resolve) => setTimeout(() => {
       const outer = document.querySelector('[data-header]');
       const element = outer.querySelector('.header-inner');
-      const rect = outer.getBoundingClientRect();
-      const style = getComputedStyle(outer);
-      resolve({ top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor, innerRadius: parseFloat(getComputedStyle(element).borderTopLeftRadius) });
+      const outerRect = outer.getBoundingClientRect();
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      resolve({ outerTop: Math.round(outerRect.top), outerWidth: Math.round(outerRect.width), top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor });
     }, 320));
   })()`);
-  assert(mobileHeader.top === 0 && mobileHeader.left === 0 && mobileHeader.width === 390 && mobileHeader.radius === 0 && mobileHeader.innerRadius === 0 && mobileHeader.background.includes("87, 86, 82"), "O cabeçalho mobile não ficou retangular e escuro após o scroll.");
-  report.checks.push("cabeçalho mobile retangular e escuro após o scroll");
+  assert(mobileHeader.outerTop === 0 && mobileHeader.outerWidth === 390 && mobileHeader.top === 8 && mobileHeader.left === 10 && mobileHeader.width === 370 && mobileHeader.radius > 25 && mobileHeader.background.includes("87, 86, 82"), `O cabeçalho mobile não virou uma cápsula escura após o scroll: ${JSON.stringify(mobileHeader)}`);
+  report.checks.push("cabeçalho mobile arredondado e escuro após o scroll");
   await screenshot(session, "mobile-header-scrolled-final.png");
 
   const form = await evaluate(session, `(() => {
@@ -355,6 +356,8 @@ try {
       resolve({
         stageWidth: Math.round(stage.width),
         stageHeight: Math.round(stage.height),
+        sectionHeight: Math.round(section.getBoundingClientRect().height),
+        sectionPadding: getComputedStyle(section).padding,
         mediaLoaded: media.complete && media.naturalWidth > 0,
         profileTitle: section.querySelector('[data-profile-title]').textContent.trim(),
         steps: section.querySelectorAll('.health-steps > div').length,
@@ -362,9 +365,20 @@ try {
       });
     }, 450));
   })()`);
-  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde não ficou full-bleed ou não exibiu todo o conteúdo.");
+  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.sectionHeight === healthMechanism.stageHeight && healthMechanism.sectionPadding === "0px" && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde não ficou full-bleed ou não exibiu todo o conteúdo.");
   report.checks.push("mecanismo de saúde integrado e interativo");
   await screenshot(session, "mobile-health-mechanism-final.png");
+
+  const mobileProcessSticky = await evaluate(session, `(async () => {
+    const cards = Array.from(document.querySelectorAll('.process-card'));
+    const positions = cards.map((card) => card.getBoundingClientRect().top + scrollY);
+    window.scrollTo(0, positions[1]);
+    await new Promise((resolve) => setTimeout(resolve, 420));
+    return cards.map((card) => ({ top: Math.round(card.getBoundingClientRect().top), position: getComputedStyle(card).position, transform: getComputedStyle(card).transform }));
+  })()`);
+  assert(mobileProcessSticky.every((card) => card.position === "sticky" && card.transform === "none") && mobileProcessSticky[0].top === 84 && mobileProcessSticky[1].top === 96, `Os cards 01, 02 e 03 perderam o sticky no mobile: ${JSON.stringify(mobileProcessSticky)}`);
+  report.checks.push("cards 01, 02 e 03 sticky no mobile");
+  await screenshot(session, "mobile-process-sticky-final.png");
 
   const location = await evaluate(session, `(() => {
     const section = document.querySelector('.location');
@@ -468,6 +482,29 @@ try {
   report.checks.push("foto do AutoShopping, C6 Seg e cabeçalho desktop escuro refinados");
   await screenshot(session, "desktop-header-scrolled-final.png");
 
+  const desktopHorizontal = await evaluate(session, `(async () => {
+    const section = document.querySelector('[data-horizontal-solutions]');
+    const sticky = section.querySelector('.solution-sticky');
+    const panel = section.querySelector('.solution-panel');
+    const travel = section.offsetHeight - innerHeight;
+    window.scrollTo(0, section.offsetTop + travel * 0.5);
+    await new Promise((resolve) => setTimeout(resolve, 420));
+    const stickyRect = sticky.getBoundingClientRect();
+    const panelRect = panel.getBoundingClientRect();
+    return {
+      stickyPosition: getComputedStyle(sticky).position,
+      stickyTop: Math.round(stickyRect.top),
+      stickyHeight: Math.round(stickyRect.height),
+      panelTop: Math.round(panelRect.top),
+      panelHeight: Math.round(panelRect.height),
+      transform: getComputedStyle(section.querySelector('[data-solution-track]')).transform,
+      bodyOverflowX: getComputedStyle(document.body).overflowX
+    };
+  })()`);
+  assert(desktopHorizontal.stickyPosition === "sticky" && desktopHorizontal.stickyTop === 0 && desktopHorizontal.stickyHeight === 900 && desktopHorizontal.panelTop === 0 && desktopHorizontal.panelHeight === 900 && desktopHorizontal.transform !== "none" && desktopHorizontal.bodyOverflowX === "clip", `A história horizontal deixou uma faixa vazia ou perdeu o sticky: ${JSON.stringify(desktopHorizontal)}`);
+  report.checks.push("história horizontal ocupa a tela inteira e permanece sticky");
+  await screenshot(session, "desktop-horizontal-sticky-final.png");
+
   await evaluate(session, `(() => {
     document.documentElement.style.scrollBehavior = 'auto';
     document.querySelector('.autoshopping').scrollIntoView({ block: 'center' });
@@ -479,9 +516,42 @@ try {
   await sleep(900);
   await screenshot(session, "desktop-partners-final.png");
 
-  await evaluate(session, "document.querySelector('#saude').scrollIntoView({ block: 'center' })");
-  await sleep(900);
+  const desktopHealth = await evaluate(session, `(async () => {
+    const section = document.querySelector('#saude');
+    section.scrollIntoView({ block: 'start' });
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    const stage = section.querySelector('.health-stage');
+    const sectionRect = section.getBoundingClientRect();
+    const stageRect = stage.getBoundingClientRect();
+    return {
+      sectionTop: Math.round(sectionRect.top),
+      stageTop: Math.round(stageRect.top),
+      sectionHeight: Math.round(sectionRect.height),
+      stageHeight: Math.round(stageRect.height),
+      paddingTop: getComputedStyle(section).paddingTop,
+      paddingBottom: getComputedStyle(section).paddingBottom
+    };
+  })()`);
+  assert(desktopHealth.sectionTop === desktopHealth.stageTop && desktopHealth.sectionHeight === desktopHealth.stageHeight && desktopHealth.paddingTop === "0px" && desktopHealth.paddingBottom === "0px", `A seção de saúde ainda tem campo azul fora da foto: ${JSON.stringify(desktopHealth)}`);
+  report.checks.push("foto de saúde sem campos azuis nas bordas");
   await screenshot(session, "desktop-health-mechanism-final.png");
+
+  const processSticky = await evaluate(session, `(async () => {
+    const cards = Array.from(document.querySelectorAll('.process-card'));
+    const positions = cards.map((card) => card.getBoundingClientRect().top + scrollY);
+    window.scrollTo(0, positions[1]);
+    await new Promise((resolve) => setTimeout(resolve, 420));
+    return cards.map((card) => ({
+      top: Math.round(card.getBoundingClientRect().top),
+      position: getComputedStyle(card).position,
+      transform: getComputedStyle(card).transform,
+      color: getComputedStyle(card).color,
+      contentTransition: getComputedStyle(card.querySelector('div')).transitionDuration
+    }));
+  })()`);
+  assert(processSticky.every((card) => card.position === "sticky" && card.transform === "none") && processSticky[0].top === 114 && processSticky[1].top === 130 && processSticky[1].color === "rgb(17, 17, 17)" && processSticky[2].color === "rgb(17, 17, 17)" && processSticky[0].contentTransition.includes("0.68s"), `Os cards 01, 02 e 03 não empilham com animação e texto preto: ${JSON.stringify(processSticky)}`);
+  report.checks.push("cards 01, 02 e 03 sticky, animados e com texto preto");
+  await screenshot(session, "desktop-process-sticky-final.png");
 
   const desktopAbout = await evaluate(session, `(() => {
     const section = document.querySelector('#sobre');

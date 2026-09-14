@@ -6,12 +6,15 @@
 
 :root {
   --header-scrolled: rgb(87, 86, 82);
+  --text: #111111;
+  --muted: #4d4d4d;
 }
 
 html,
 body {
   max-width: 100%;
-  overflow-x: hidden;
+  /* `hidden` cria um ancestral de rolagem e impede position: sticky. */
+  overflow-x: clip;
 }
 
 /* Botoes planos nas cores da marca. */
@@ -200,6 +203,32 @@ body {
   background-image: url("assets/health-section-bg.png") !important;
 }
 
+/* Mantem o movimento de entrada sem transformar o proprio card sticky. */
+.reveal-ready .process-card[data-reveal] {
+  opacity: 1 !important;
+  filter: none !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+.reveal-ready .process-card[data-reveal] > span,
+.reveal-ready .process-card[data-reveal] > div {
+  opacity: 0;
+  filter: blur(7px);
+  transform: translateY(24px);
+  transition:
+    opacity 0.68s ease,
+    filter 0.68s ease,
+    transform 0.68s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal-ready .process-card[data-reveal].is-visible > span,
+.reveal-ready .process-card[data-reveal].is-visible > div {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
 /* Carrossel principal mais proximo das laterais da tela. */
 .insurance-shell {
   width: min(1600px, calc(100% - 32px)) !important;
@@ -216,20 +245,39 @@ body {
 .about,
 .about.is-visible {
   background: var(--white) !important;
-  color: var(--navy-deep) !important;
+  color: #111111 !important;
 }
 
 .about-owner-heading h2,
 #about-title {
   display: block !important;
   max-width: 10ch !important;
-  color: var(--navy-deep) !important;
+  color: #111111 !important;
 }
 
 .about-owner > p,
 .about-owner > p strong {
   color: var(--muted) !important;
   font-weight: 400 !important;
+}
+
+/* Tipografia preta nas superficies claras; textos sobre fotos continuam brancos. */
+.autoshopping-copy h2,
+.partners-heading h2,
+.insurance-heading h2,
+.health-brands .partners-heading h2,
+.faq-wrap h2,
+.location-details h2,
+.contact-copy h2,
+.process-card-two,
+.process-card-three,
+.process-card-two h3,
+.process-card-three h3,
+.process-card-two strong,
+.process-card-three strong,
+.process-card-two p,
+.process-card-three p {
+  color: #111111 !important;
 }
 
 .about-founder-photo img {
@@ -239,13 +287,15 @@ body {
 }
 
 /* Saude em imagem full-bleed; a camada escura garante leitura do texto branco. */
+#saude.health,
 .health {
   width: 100% !important;
   max-width: none !important;
   min-height: 100svh !important;
   margin: 0 !important;
   padding: 0 !important;
-  background: var(--navy-deep) !important;
+  display: block !important;
+  background: transparent !important;
   overflow: hidden !important;
 }
 
@@ -354,12 +404,12 @@ body {
   }
 
   .site-header.is-scrolled {
-    background: var(--header-scrolled) !important;
+    padding: 8px 10px 0 !important;
+    background: transparent !important;
   }
 
   .site-header .header-inner,
-  .site-header:not(.is-scrolled) .header-inner,
-  .site-header.is-scrolled .header-inner {
+  .site-header:not(.is-scrolled) .header-inner {
     width: 100% !important;
     min-height: 72px !important;
     margin: 0 !important;
@@ -370,6 +420,19 @@ body {
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+
+  .site-header.is-scrolled .header-inner {
+    width: 100% !important;
+    min-height: 64px !important;
+    margin: 0 !important;
+    padding: 6px 12px !important;
+    border: 0 !important;
+    border-radius: 999px !important;
+    background: var(--header-scrolled) !important;
+    box-shadow: none !important;
+    backdrop-filter: blur(16px) saturate(115%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(115%) !important;
   }
 
   .site-header .brand,
@@ -406,6 +469,8 @@ body {
   .menu-open .site-header.is-scrolled,
   .menu-open .site-header .header-inner,
   .menu-open .site-header.is-scrolled .header-inner {
+    padding-top: 0 !important;
+    border-radius: 0 !important;
     background: var(--navy-deep) !important;
   }
 
