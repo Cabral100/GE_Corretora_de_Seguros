@@ -171,6 +171,10 @@ try {
     heroBackdropSource: document.querySelector('.hero-backdrop')?.getAttribute('src'),
     finalStylesheet: Array.from(document.styleSheets).some((sheet) => String(sheet.href || '').includes('final-refresh.css')),
     navOrder: Array.from(document.querySelectorAll('.nav-links a')).map((link) => link.textContent.trim()).join('|'),
+    headerSurface: document.querySelector('[data-header]')?.dataset.surface,
+    headerBackground: getComputedStyle(document.querySelector('[data-header] .header-inner')).backgroundColor,
+    initialNavColor: getComputedStyle(document.querySelector('.nav-links a')).color,
+    initialToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor,
     sectionLabels: document.querySelectorAll('.section-kicker, .location-index').length,
     insuranceCodes: document.querySelectorAll('.insurance-code').length,
     brokenImages: Array.from(document.images).filter((image) => image.complete && image.naturalWidth === 0).map((image) => image.getAttribute('src')),
@@ -185,6 +189,7 @@ try {
   assert(initial.heroBackdropSource === "assets/hero-family-protection.jpg", "O hero ainda usa a fotografia anterior.");
   assert(initial.finalStylesheet, "A camada visual final não foi carregada.");
   assert(initial.navOrder === "Home|Seguros|Sobre nós|Plano de saúde|Contato", "A ordem do menu não acompanha as seções.");
+  assert(initial.headerSurface === "dark" && initial.headerBackground === "rgba(0, 0, 0, 0)" && initial.initialNavColor === "rgb(255, 255, 255)" && initial.initialToggleColor === "rgb(255, 255, 255)", `O cabeçalho inicial não está transparente e legível sobre o hero: ${JSON.stringify(initial)}`);
   assert(initial.sectionLabels === 0, "Ainda existem rótulos pequenos acima das seções.");
   assert(initial.insuranceCodes === 0, "Ainda existem cápsulas de categoria no carrossel de seguros.");
   assert(initial.autoPopupOpen, "O formulário automático não abriu ao carregar o site.");
@@ -200,10 +205,16 @@ try {
   await sleep(250);
   await screenshot(session, "mobile-hero-final.png");
 
+  await evaluate(session, "window.scrollTo(0, 620)");
+  await sleep(350);
+
   const menu = await evaluate(session, `(() => {
     document.querySelector('[data-menu-toggle]').click();
     const links = Array.from(document.querySelectorAll('.nav-links a'));
     const toggleStyle = getComputedStyle(document.querySelector('[data-menu-toggle]'));
+    const header = document.querySelector('[data-header] .header-inner');
+    const navigation = document.querySelector('[data-nav]');
+    const brand = document.querySelector('[data-header] .brand');
     return new Promise((resolve) => setTimeout(() => resolve({
       open: document.querySelector('[data-nav]').classList.contains('is-open'),
       links: links.length,
@@ -213,10 +224,17 @@ try {
         return style.visibility !== 'hidden' && style.color === 'rgb(255, 255, 255)' && Number(style.opacity) > 0.95 && rect.width > 250 && rect.height > 30;
       }),
       toggleRadius: parseFloat(toggleStyle.borderTopLeftRadius),
-      toggleBorder: toggleStyle.borderTopWidth
+      toggleBorder: toggleStyle.borderTopWidth,
+      headerBottom: Math.round(header.getBoundingClientRect().bottom),
+      navigationTop: Math.round(navigation.getBoundingClientRect().top),
+      firstLinkTop: Math.round(links[0].getBoundingClientRect().top),
+      firstLinkCenter: Math.round(links[0].getBoundingClientRect().left + links[0].getBoundingClientRect().width / 2),
+      brandWidth: Math.round(brand.getBoundingClientRect().width),
+      brandHeight: Math.round(brand.getBoundingClientRect().height),
+      toggleLineColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor
     }), 650));
   })()`);
-  assert(menu.open && menu.links === 5 && menu.visible && menu.toggleRadius === 0 && menu.toggleBorder === "0px", `O menu mobile não abriu corretamente: ${JSON.stringify(menu)}`);
+  assert(menu.open && menu.links === 5 && menu.visible && menu.toggleRadius === 0 && menu.toggleBorder === "0px" && menu.headerBottom === menu.navigationTop && menu.firstLinkTop >= 125 && Math.abs(menu.firstLinkCenter - 195) <= 1 && menu.brandWidth <= 84 && menu.brandHeight <= 48 && menu.toggleLineColor === "rgb(255, 255, 255)", `O menu mobile não abriu sem lacuna, centralizado e proporcional: ${JSON.stringify(menu)}`);
   report.checks.push("menu mobile e links escalonados");
   await screenshot(session, "mobile-menu-final-2026.png");
   await evaluate(session, "document.querySelector('[data-menu-toggle]').click()");
@@ -229,11 +247,12 @@ try {
       const outerRect = outer.getBoundingClientRect();
       const rect = element.getBoundingClientRect();
       const style = getComputedStyle(element);
-      resolve({ outerTop: Math.round(outerRect.top), outerWidth: Math.round(outerRect.width), top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor });
+      const brandRect = outer.querySelector('.brand').getBoundingClientRect();
+      resolve({ outerTop: Math.round(outerRect.top), outerWidth: Math.round(outerRect.width), top: Math.round(rect.top), left: Math.round(rect.left), width: Math.round(rect.width), radius: parseFloat(style.borderTopLeftRadius), background: style.backgroundColor, surface: outer.dataset.surface, navColor: getComputedStyle(outer.querySelector('.nav-links a')).color, brandWidth: Math.round(brandRect.width), brandHeight: Math.round(brandRect.height) });
     }, 320));
   })()`);
-  assert(mobileHeader.outerTop === 0 && mobileHeader.outerWidth === 390 && mobileHeader.top === 8 && mobileHeader.left === 10 && mobileHeader.width === 370 && mobileHeader.radius > 25 && mobileHeader.background.includes("87, 86, 82"), `O cabeçalho mobile não virou uma cápsula escura após o scroll: ${JSON.stringify(mobileHeader)}`);
-  report.checks.push("cabeçalho mobile arredondado e escuro após o scroll");
+  assert(mobileHeader.outerTop === 0 && mobileHeader.outerWidth === 390 && mobileHeader.top === 8 && mobileHeader.left === 10 && mobileHeader.width === 370 && mobileHeader.radius > 25 && mobileHeader.background === "rgba(28, 29, 28, 0.62)" && mobileHeader.surface === "dark" && mobileHeader.navColor === "rgb(255, 255, 255)" && mobileHeader.brandWidth <= 84 && mobileHeader.brandHeight <= 48, `O cabeçalho mobile não virou uma cápsula de vidro escura após o scroll: ${JSON.stringify(mobileHeader)}`);
+  report.checks.push("cabeçalho mobile arredondado, proporcional e translúcido após o scroll");
   await screenshot(session, "mobile-header-scrolled-final.png");
 
   const form = await evaluate(session, `(() => {
@@ -303,10 +322,14 @@ try {
       imageLoaded: founder.complete && founder.naturalWidth === 853 && founder.naturalHeight === 1280,
       portraitUncropped: Math.abs(founder.getBoundingClientRect().width / founder.getBoundingClientRect().height - 853 / 1280) < 0.01,
       copyBeforePhoto: copy.getBoundingClientRect().top < founder.getBoundingClientRect().top,
-      whiteBackground: getComputedStyle(section).backgroundColor === 'rgb(255, 255, 255)'
+      whiteBackground: getComputedStyle(section).backgroundColor === 'rgb(255, 255, 255)',
+      headerSurface: document.querySelector('[data-header]').dataset.surface,
+      headerBackground: getComputedStyle(document.querySelector('[data-header] .header-inner')).backgroundColor,
+      headerToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor,
+      headingColor: getComputedStyle(section.querySelector('h2')).color
     }), 400));
   })()`);
-  assert(Object.values(about).every(Boolean), `A seção sobre não preservou o retrato e a hierarquia pedidos: ${JSON.stringify(about)}`);
+  assert(about.ownerClear && about.oldTitleRemoved && about.oldOwnerTitleRemoved && about.oldPartnershipRemoved && about.imageLoaded && about.portraitUncropped && about.copyBeforePhoto && about.whiteBackground && about.headerSurface === "light" && about.headerBackground === "rgba(255, 255, 255, 0.68)" && about.headerToggleColor === "rgb(17, 17, 17)" && about.headingColor === "rgb(17, 17, 17)", `A seção sobre ou o contraste adaptativo do cabeçalho não ficaram corretos: ${JSON.stringify(about)}`);
   report.checks.push("seção sobre com texto primeiro e retrato original completo do Caio");
   await screenshot(session, "mobile-about-final.png");
   await evaluate(session, "document.querySelector('.about-founder-photo').scrollIntoView({ block: 'center' })");
@@ -361,11 +384,14 @@ try {
         mediaLoaded: media.complete && media.naturalWidth > 0,
         profileTitle: section.querySelector('[data-profile-title]').textContent.trim(),
         steps: section.querySelectorAll('.health-steps > div').length,
-        titleColor: getComputedStyle(section.querySelector('h2')).color
+        titleColor: getComputedStyle(section.querySelector('h2')).color,
+        headerSurface: document.querySelector('[data-header]').dataset.surface,
+        headerBackground: getComputedStyle(document.querySelector('[data-header] .header-inner')).backgroundColor,
+        headerToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor
       });
     }, 450));
   })()`);
-  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.sectionHeight === healthMechanism.stageHeight && healthMechanism.sectionPadding === "0px" && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde não ficou full-bleed ou não exibiu todo o conteúdo.");
+  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.sectionHeight === healthMechanism.stageHeight && healthMechanism.sectionPadding === "0px" && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)" && healthMechanism.headerSurface === "dark" && healthMechanism.headerBackground === "rgba(28, 29, 28, 0.62)" && healthMechanism.headerToggleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde ou o contraste do cabeçalho não ficaram corretos.");
   report.checks.push("mecanismo de saúde integrado e interativo");
   await screenshot(session, "mobile-health-mechanism-final.png");
 
@@ -387,12 +413,16 @@ try {
     const whatsApp = document.querySelector('.whatsapp-float');
     return new Promise((resolve) => setTimeout(() => resolve({
       title: section.querySelector('h2')?.textContent.trim(),
+      titleColor: getComputedStyle(section.querySelector('h2')).color,
+      titleSize: parseFloat(getComputedStyle(section.querySelector('h2')).fontSize),
       mapVisible: map.getBoundingClientRect().height > 300,
-      whatsappShadow: getComputedStyle(whatsApp).boxShadow
+      whatsappShadow: getComputedStyle(whatsApp).boxShadow,
+      headerSurface: document.querySelector('[data-header]').dataset.surface,
+      headerToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor
     }), 400));
   })()`);
-  assert(location.title === "Venha conversar com a gente." && location.mapVisible && location.whatsappShadow === "none", "A seção de localização ou o botão do WhatsApp não está conforme o esperado.");
-  report.checks.push("localização editorial e WhatsApp sem sombra");
+  assert(location.title === "Contato e localização" && location.titleColor === "rgb(17, 17, 17)" && location.titleSize <= 38 && location.mapVisible && location.whatsappShadow === "none" && location.headerSurface === "light" && location.headerToggleColor === "rgb(17, 17, 17)", `A seção de localização ou seu contraste não estão conforme o esperado: ${JSON.stringify(location)}`);
+  report.checks.push("contato e localização com hierarquia editorial e contraste correto");
   await screenshot(session, "mobile-location-final.png");
 
   const footer = await evaluate(session, `(() => {
@@ -417,10 +447,14 @@ try {
   const narrowMobile = await evaluate(session, `(() => {
     const links = Array.from(document.querySelectorAll('.nav-links a'));
     const toggle = document.querySelector('[data-menu-toggle]');
+    const header = document.querySelector('[data-header] .header-inner');
+    const navigation = document.querySelector('[data-nav]');
     return {
       overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
       headerWidth: Math.round(document.querySelector('[data-header]').getBoundingClientRect().width),
       toggleRadius: parseFloat(getComputedStyle(toggle).borderTopLeftRadius),
+      menuGap: Math.round(navigation.getBoundingClientRect().top - header.getBoundingClientRect().bottom),
+      linksCenter: Math.round(links[0].getBoundingClientRect().left + links[0].getBoundingClientRect().width / 2),
       linksVisible: links.every((link) => {
         const style = getComputedStyle(link);
         const rect = link.getBoundingClientRect();
@@ -428,7 +462,7 @@ try {
       })
     };
   })()`);
-  assert(!narrowMobile.overflow && narrowMobile.headerWidth === 320 && narrowMobile.toggleRadius === 0 && narrowMobile.linksVisible, `O menu não ficou íntegro em 320 px: ${JSON.stringify(narrowMobile)}`);
+  assert(!narrowMobile.overflow && narrowMobile.headerWidth === 320 && narrowMobile.toggleRadius === 0 && narrowMobile.menuGap === 0 && narrowMobile.linksCenter === 160 && narrowMobile.linksVisible, `O menu não ficou íntegro em 320 px: ${JSON.stringify(narrowMobile)}`);
   report.checks.push("menu e cabeçalho íntegros em 320 px");
   await screenshot(session, "mobile-320-menu-final.png");
 

@@ -22,6 +22,7 @@
   const mobileNavigation = window.matchMedia("(max-width: 860px)");
 
   let selectedInterest = "";
+  let headerFrame = 0;
 
   function digitsOnly(value) {
     return String(value || "").replace(/\D/g, "");
@@ -218,7 +219,13 @@
     const profileValid = validateSelect(contactForm.elements.profile, "contact-profile-error", "Escolha para quem é a proteção.");
     const consentValid = Boolean(contactForm.elements.consent.checked);
     setFieldError(contactForm.elements.consent, consentValid ? "" : "Autorize o contato para enviar.", "contact-consent-error");
-    if (!nameValid || !phoneValid || !interestValid || !profileValid || !consentValid) return;
+    if (!nameValid || !phoneValid || !interestValid || !profileValid || !consentValid) {
+      const invalid = contactForm.querySelector("[aria-invalid='true']");
+      const status = contactForm.querySelector(".form-status");
+      if (status) status.textContent = "Revise o campo indicado para continuar.";
+      if (invalid) invalid.focus({ preventScroll: false });
+      return;
+    }
 
     const lead = getLeadFromForm(contactForm, "formulario_contato");
     if (lead.company) return;
@@ -246,8 +253,10 @@
     }
     document.body.classList.add("dialog-open");
     window.setTimeout(() => {
-      const input = leadForm && leadForm.elements.name;
-      if (input) input.focus({ preventScroll: true });
+      const target = mobileNavigation.matches
+        ? leadDialog.querySelector("[data-close-lead]")
+        : leadForm && leadForm.elements.name;
+      if (target) target.focus({ preventScroll: true });
     }, 100);
     trackEvent("lead_popup_open", { interest: selectedInterest, source: interest ? "cta" : "automatico" });
   }
@@ -336,6 +345,7 @@
 
       let timer = null;
       let scrollFrame = 0;
+      let isVisible = true;
       const items = Array.from(track.querySelectorAll("[data-carousel-item]"));
       const dotsContainer = carousel.querySelector("[data-carousel-dots]");
       const getStep = () => {
@@ -386,7 +396,7 @@
       };
       const start = () => {
         stop();
-        if (reducedMotion.matches || carousel.dataset.carouselAutoplay !== "true") return;
+        if (!isVisible || reducedMotion.matches || carousel.dataset.carouselAutoplay !== "true") return;
         timer = window.setInterval(() => {
           const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
           if (atEnd) track.scrollTo({ left: 0, behavior: "smooth" });
@@ -398,9 +408,35 @@
       carousel.addEventListener("focusin", stop);
       carousel.addEventListener("focusout", start);
       carousel.addEventListener("touchstart", stop, { passive: true });
+      if ("IntersectionObserver" in window) {
+        const visibilityObserver = new IntersectionObserver(([entry]) => {
+          isVisible = Boolean(entry && entry.isIntersecting);
+          if (isVisible) start();
+          else stop();
+        }, { threshold: 0.08 });
+        visibilityObserver.observe(carousel);
+      }
       updateState();
       start();
     });
+  }
+
+  function updateHeaderState() {
+    headerFrame = 0;
+    if (!header) return;
+    header.classList.toggle("is-scrolled", window.scrollY > 16);
+
+    const sampleY = Math.min(window.innerHeight - 1, Math.max(1, Math.round(header.getBoundingClientRect().bottom + 2)));
+    const section = document.elementsFromPoint(Math.round(window.innerWidth / 2), sampleY)
+      .map((element) => element.closest && element.closest("main section"))
+      .find(Boolean);
+    const darkSurface = !section || section.matches(".opening, .solution-scroll, .health, .process, .contact");
+    header.dataset.surface = darkSurface ? "dark" : "light";
+  }
+
+  function requestHeaderUpdate() {
+    if (headerFrame) return;
+    headerFrame = window.requestAnimationFrame(updateHeaderState);
   }
 
   function setupHorizontalSolutions() {
@@ -494,18 +530,38 @@
   }
 
   document.addEventListener("keydown", (event) => {
+    if (event.key === "Tab" && mobileNavigation.matches && navigation?.classList.contains("is-open")) {
+      const focusable = [menuToggle, ...navigation.querySelectorAll("a[href], button:not([disabled])")]
+        .filter((element) => element && !element.inert);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last?.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first?.focus();
+      }
+      return;
+    }
     if (event.key !== "Escape") return;
     if (leadDialog && leadDialog.open) closeLead();
-    else closeMenu();
+    else {
+      const wasOpen = Boolean(navigation?.classList.contains("is-open"));
+      closeMenu();
+      if (wasOpen) menuToggle?.focus();
+    }
   });
 
-  window.addEventListener("scroll", () => { if (header) header.classList.toggle("is-scrolled", window.scrollY > 16); }, { passive: true });
+  window.addEventListener("scroll", requestHeaderUpdate, { passive: true });
+  window.addEventListener("resize", requestHeaderUpdate, { passive: true });
 
   setupReveals();
   setupFaq();
   setupCarousel();
   setupHorizontalSolutions();
   setupNavigationSpy();
+  updateHeaderState();
 
   if (config.autoOpenPopup && leadDialog) window.setTimeout(() => openLead(""), Math.max(250, Number(config.popupDelayMs) || 900));
 })();

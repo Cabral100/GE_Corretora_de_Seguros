@@ -5,7 +5,7 @@
  */
 
 :root {
-  --header-scrolled: rgb(87, 86, 82);
+  --header-scrolled: rgba(28, 29, 28, 0.62);
   --text: #111111;
   --muted: #4d4d4d;
 }
@@ -40,7 +40,7 @@ body {
   text-shadow: none !important;
 }
 
-/* Header: branco e full-bleed no topo; uma unica superficie escura ao rolar. */
+/* Header transparente no topo; uma unica superficie de vidro ao rolar. */
 .site-header,
 .site-header:not(.is-scrolled) {
   top: 0 !important;
@@ -49,7 +49,7 @@ body {
   padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: var(--white) !important;
+  background: transparent !important;
   box-shadow: none !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
@@ -87,22 +87,40 @@ body {
   min-height: 66px !important;
   margin-inline: auto !important;
   padding: 6px 14px 6px 22px !important;
-  border: 0 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
   border-radius: 999px !important;
   background: var(--header-scrolled) !important;
   box-shadow: none !important;
-  backdrop-filter: blur(16px) saturate(115%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(115%) !important;
+  backdrop-filter: blur(20px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
 }
 
 .site-header:not(.is-scrolled) .nav-links a {
-  color: var(--navy-deep) !important;
-  text-shadow: none !important;
+  color: var(--white) !important;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.42) !important;
 }
 
 .site-header.is-scrolled .nav-links a {
   color: var(--white) !important;
   text-shadow: none !important;
+}
+
+.site-header.is-scrolled[data-surface="light"] .header-inner {
+  border-color: rgba(17, 17, 17, 0.1) !important;
+  background: rgba(255, 255, 255, 0.68) !important;
+}
+
+.site-header.is-scrolled[data-surface="light"] .nav-links a {
+  color: #111111 !important;
+}
+
+.site-header.is-scrolled[data-surface="dark"] .header-inner {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  background: var(--header-scrolled) !important;
+}
+
+.site-header.is-scrolled[data-surface="dark"] .nav-links a {
+  color: var(--white) !important;
 }
 
 .site-header .nav-links a[aria-current="true"]::after,
@@ -268,7 +286,6 @@ body {
 .health-brands .partners-heading h2,
 .faq-wrap h2,
 .location-details h2,
-.contact-copy h2,
 .process-card-two,
 .process-card-three,
 .process-card-two h3,
@@ -278,6 +295,78 @@ body {
 .process-card-two p,
 .process-card-three p {
   color: #111111 !important;
+}
+
+/* Escala editorial menor e mais serena para reduzir carga visual. */
+.autoshopping-copy h2,
+.insurance-heading h2,
+.about-owner-heading h2,
+#about-title,
+.health-stage .health-copy h2,
+.process-intro h2 {
+  font-size: clamp(2.7rem, 4.6vw, 4.8rem) !important;
+  line-height: 0.98 !important;
+  letter-spacing: -0.055em !important;
+}
+
+.partners-heading h2,
+.health-brands .partners-heading h2,
+.faq-wrap h2,
+.contact-copy h2,
+.footer-cta h2 {
+  font-size: clamp(2.2rem, 3.6vw, 3.8rem) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.045em !important;
+}
+
+.location-details h2 {
+  max-width: 15ch !important;
+  margin-bottom: 28px !important;
+  color: #111111 !important;
+  font-size: clamp(1.9rem, 2.8vw, 2.8rem) !important;
+  font-weight: 500 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.04em !important;
+}
+
+.process-card h3 {
+  font-size: clamp(2.5rem, 4.6vw, 4.7rem) !important;
+  line-height: 0.98 !important;
+}
+
+/* Contraste contextual: preto nas superficies claras, branco nas escuras. */
+.answers,
+.location,
+.partners,
+.insurance,
+.about,
+.health-brands,
+.autoshopping {
+  color: #111111 !important;
+}
+
+.answers h2,
+.answers h3,
+.answers summary,
+.answer-aside h3,
+.location h2,
+.location h3,
+.location dt,
+.location .route-link {
+  color: #111111 !important;
+}
+
+.contact,
+.contact-copy,
+.contact-copy h2,
+.contact-copy > p,
+.contact-location strong {
+  color: var(--white) !important;
+}
+
+.contact-copy > p,
+.contact-location p {
+  color: rgba(255, 255, 255, 0.76) !important;
 }
 
 .about-founder-photo img {
@@ -400,7 +489,7 @@ body {
   }
 
   .site-header:not(.is-scrolled) {
-    background: var(--white) !important;
+    background: transparent !important;
   }
 
   .site-header.is-scrolled {
@@ -427,18 +516,18 @@ body {
     min-height: 64px !important;
     margin: 0 !important;
     padding: 6px 12px !important;
-    border: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
     border-radius: 999px !important;
     background: var(--header-scrolled) !important;
     box-shadow: none !important;
-    backdrop-filter: blur(16px) saturate(115%) !important;
-    -webkit-backdrop-filter: blur(16px) saturate(115%) !important;
+    backdrop-filter: blur(20px) saturate(125%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(125%) !important;
   }
 
   .site-header .brand,
   .site-header.is-scrolled .brand {
-    width: 90px !important;
-    height: 50px !important;
+    width: 82px !important;
+    height: 46px !important;
   }
 
   .site-header .menu-toggle,
@@ -457,7 +546,7 @@ body {
   }
 
   .site-header:not(.is-scrolled) .menu-toggle span {
-    background: var(--navy-deep) !important;
+    background: var(--white) !important;
   }
 
   .site-header.is-scrolled .menu-toggle span,
@@ -465,13 +554,30 @@ body {
     background: var(--white) !important;
   }
 
+  .site-header.is-scrolled[data-surface="light"] .menu-toggle span {
+    background: #111111 !important;
+  }
+
+  .menu-open .site-header .menu-toggle span,
+  .menu-open .site-header.is-scrolled[data-surface="light"] .menu-toggle span,
+  .menu-open .site-header.is-scrolled[data-surface="dark"] .menu-toggle span {
+    background: var(--white) !important;
+  }
+
   .menu-open .site-header,
   .menu-open .site-header.is-scrolled,
   .menu-open .site-header .header-inner,
   .menu-open .site-header.is-scrolled .header-inner {
-    padding-top: 0 !important;
+    padding: 0 !important;
     border-radius: 0 !important;
     background: var(--navy-deep) !important;
+  }
+
+  .menu-open .site-header .header-inner,
+  .menu-open .site-header.is-scrolled .header-inner {
+    min-height: 72px !important;
+    padding: 7px 18px !important;
+    border: 0 !important;
   }
 
   .menu-open .header-inner > .brand {
@@ -503,6 +609,10 @@ body {
   }
 
   .main-nav.is-open {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
     visibility: visible !important;
     opacity: 1 !important;
     pointer-events: auto !important;
@@ -514,10 +624,10 @@ body {
 
   .main-nav .nav-links,
   .main-nav.is-open .nav-links {
-    width: 100% !important;
+    width: min(100%, 520px) !important;
     display: grid !important;
     gap: 0 !important;
-    margin: 0 !important;
+    margin: clamp(44px, 9vh, 82px) auto 0 !important;
     border-top: 1px solid rgba(255, 255, 255, 0.16) !important;
   }
 
@@ -538,7 +648,7 @@ body {
     font-size: clamp(1.15rem, 5.6vw, 1.45rem) !important;
     font-weight: 400 !important;
     line-height: 1.2 !important;
-    text-align: left !important;
+    text-align: center !important;
     text-decoration: none !important;
     text-shadow: none !important;
     opacity: 1 !important;
@@ -565,7 +675,7 @@ body {
 
   .main-nav .mobile-nav-cta,
   .main-nav.is-open .mobile-nav-cta {
-    width: 100% !important;
+    width: min(100%, 520px) !important;
     min-height: 52px !important;
     display: flex !important;
     align-items: center !important;
@@ -580,9 +690,10 @@ body {
   }
 
   .main-nav .mobile-nav-note {
-    margin: auto 0 0 !important;
+    margin: auto auto 0 !important;
     padding-top: 20px !important;
     color: rgba(255, 255, 255, 0.65) !important;
+    text-align: center !important;
     opacity: 1 !important;
   }
 
@@ -634,7 +745,7 @@ body {
   .about-owner-heading h2,
   #about-title {
     max-width: none !important;
-    font-size: clamp(3rem, 14vw, 4.8rem) !important;
+    font-size: clamp(2.65rem, 11.5vw, 3.8rem) !important;
   }
 
   .health,
@@ -668,7 +779,7 @@ body {
 
   .health-stage .health-copy h2 {
     max-width: 9ch !important;
-    font-size: clamp(3rem, 13.2vw, 4.6rem) !important;
+    font-size: clamp(2.65rem, 11.4vw, 3.8rem) !important;
   }
 
   .health-stage .health-copy > p {
@@ -679,6 +790,28 @@ body {
   .health-stage .health-steps {
     width: 100% !important;
     display: grid !important;
+  }
+
+  .autoshopping-copy h2,
+  .insurance-heading h2,
+  .process-intro h2 {
+    font-size: clamp(2.5rem, 11vw, 3.7rem) !important;
+  }
+
+  .process-card h3 {
+    font-size: clamp(2.15rem, 9.5vw, 3.25rem) !important;
+  }
+
+  .partners-heading h2,
+  .health-brands .partners-heading h2,
+  .faq-wrap h2,
+  .contact-copy h2,
+  .footer-cta h2 {
+    font-size: clamp(2rem, 8.5vw, 2.9rem) !important;
+  }
+
+  .location-details h2 {
+    font-size: clamp(1.75rem, 7.6vw, 2.35rem) !important;
   }
 }
 
