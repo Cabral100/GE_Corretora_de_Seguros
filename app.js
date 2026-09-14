@@ -23,6 +23,7 @@
 
   let selectedInterest = "";
   let headerFrame = 0;
+  let headerSettleTimer = 0;
 
   function digitsOnly(value) {
     return String(value || "").replace(/\D/g, "");
@@ -435,8 +436,12 @@
   }
 
   function requestHeaderUpdate() {
-    if (headerFrame) return;
-    headerFrame = window.requestAnimationFrame(updateHeaderState);
+    if (!headerFrame) headerFrame = window.requestAnimationFrame(updateHeaderState);
+    if (headerSettleTimer) window.clearTimeout(headerSettleTimer);
+    headerSettleTimer = window.setTimeout(() => {
+      headerSettleTimer = 0;
+      updateHeaderState();
+    }, 120);
   }
 
   function setupHorizontalSolutions() {

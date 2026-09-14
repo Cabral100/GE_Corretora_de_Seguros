@@ -257,6 +257,10 @@ try {
 
   const form = await evaluate(session, `(() => {
     document.querySelector('[data-open-lead]').click();
+    const dialog = document.querySelector('#lead-dialog');
+    const dialogRect = dialog.getBoundingClientRect();
+    const closeButton = dialog.querySelector('[data-close-lead]');
+    const submitArrow = dialog.querySelector('.lead-submit i');
     window.open = (url) => { window.__whatsappTestUrl = url; return { opener: null }; };
     window.fetch = () => Promise.resolve({ ok: true });
     const form = document.querySelector('#lead-form');
@@ -275,7 +279,10 @@ try {
       opensWhatsapp: String(window.__whatsappTestUrl || '').startsWith('https://wa.me/5511993135111'),
       preparedMessage: decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Cliente Teste') && decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Quero cobertura completa'),
       fullWidth: button.width >= form.getBoundingClientRect().width - 20,
-      afterTextarea: button.top > textarea.bottom
+      afterTextarea: button.top > textarea.bottom,
+      compactModal: dialogRect.width <= 366 && dialogRect.height <= 820 && dialogRect.left >= 11 && dialogRect.top >= 11 && parseFloat(getComputedStyle(dialog).borderTopLeftRadius) >= 18,
+      closeWithoutYellow: getComputedStyle(closeButton).outlineColor !== 'rgb(245, 196, 0)' && !getComputedStyle(closeButton).borderColor.includes('245, 196, 0'),
+      unifiedArrow: getComputedStyle(submitArrow).backgroundColor === 'rgba(0, 0, 0, 0)' && getComputedStyle(submitArrow).color === getComputedStyle(dialog.querySelector('.lead-submit')).color
     };
   })()`);
   assert(Object.values(form).every(Boolean), `O formulário não passou nos checks: ${JSON.stringify(form)}`);
@@ -362,21 +369,30 @@ try {
       slides: section.querySelectorAll('[data-carousel-item]').length,
       onePerView: Math.abs(track.querySelector('[data-carousel-item]').getBoundingClientRect().width - track.clientWidth) < 2,
       dots: section.querySelectorAll('[data-carousel-dots] button').length,
-      activeDots: section.querySelectorAll('[data-carousel-dots] button[aria-current="true"]').length
+      activeDots: section.querySelectorAll('[data-carousel-dots] button[aria-current="true"]').length,
+      sectionTitle: section.querySelector('h2').textContent.trim(),
+      descriptionContainsPhrase: section.querySelector('.insurance-heading p').textContent.includes('Cada fase pede uma proteção diferente'),
+      ctaBackground: getComputedStyle(section.querySelector('.insurance-slide button')).backgroundColor,
+      ctaColor: getComputedStyle(section.querySelector('.insurance-slide button')).color
     }), 650));
   })()`);
-  assert(carousel.after > carousel.before && carousel.slides === 6 && carousel.onePerView && carousel.dots === 6 && carousel.activeDots === 1, "O carrossel de seguros não avançou corretamente.");
+  assert(carousel.after > carousel.before && carousel.slides === 6 && carousel.onePerView && carousel.dots === 6 && carousel.activeDots === 1 && carousel.sectionTitle === "Seguros" && carousel.descriptionContainsPhrase && carousel.ctaBackground === "rgb(255, 255, 255)" && carousel.ctaColor === "rgb(17, 17, 17)", `O carrossel de seguros, a hierarquia ou os CTAs não ficaram corretos: ${JSON.stringify(carousel)}`);
   report.checks.push("carrossel mobile com seis slides, setas e seis indicadores");
   await screenshot(session, "mobile-insurance-final.png");
 
   const healthMechanism = await evaluate(session, `(() => {
     const section = document.querySelector('#saude');
     section.scrollIntoView({ block: 'start' });
+    window.scrollBy(0, 140);
     section.querySelector('[data-health-profile="familiar"]').click();
     return new Promise((resolve) => setTimeout(() => {
       const stage = section.querySelector('.health-stage').getBoundingClientRect();
       const media = section.querySelector('.health-stage-media');
+      const headerRect = document.querySelector('[data-header]').getBoundingClientRect();
+      const sampleY = Math.round(headerRect.bottom + 2);
       resolve({
+        scrollY: Math.round(window.scrollY),
+        stageTop: Math.round(stage.top),
         stageWidth: Math.round(stage.width),
         stageHeight: Math.round(stage.height),
         sectionHeight: Math.round(section.getBoundingClientRect().height),
@@ -387,11 +403,12 @@ try {
         titleColor: getComputedStyle(section.querySelector('h2')).color,
         headerSurface: document.querySelector('[data-header]').dataset.surface,
         headerBackground: getComputedStyle(document.querySelector('[data-header] .header-inner')).backgroundColor,
-        headerToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor
+        headerToggleColor: getComputedStyle(document.querySelector('[data-menu-toggle] span')).backgroundColor,
+        sampledSections: document.elementsFromPoint(Math.round(innerWidth / 2), sampleY).map((element) => element.closest?.('main section')?.className || '').filter(Boolean)
       });
     }, 450));
   })()`);
-  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.sectionHeight === healthMechanism.stageHeight && healthMechanism.sectionPadding === "0px" && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)" && healthMechanism.headerSurface === "dark" && healthMechanism.headerBackground === "rgba(28, 29, 28, 0.62)" && healthMechanism.headerToggleColor === "rgb(255, 255, 255)", "O mecanismo de plano de saúde ou o contraste do cabeçalho não ficaram corretos.");
+  assert(healthMechanism.stageWidth === 390 && healthMechanism.stageHeight >= 844 && healthMechanism.sectionHeight === healthMechanism.stageHeight && healthMechanism.sectionPadding === "0px" && healthMechanism.mediaLoaded && healthMechanism.profileTitle === "Plano familiar" && healthMechanism.steps === 3 && healthMechanism.titleColor === "rgb(255, 255, 255)" && healthMechanism.headerSurface === "dark" && healthMechanism.headerBackground === "rgba(28, 29, 28, 0.62)" && healthMechanism.headerToggleColor === "rgb(255, 255, 255)", `O mecanismo de plano de saúde ou o contraste do cabeçalho não ficaram corretos: ${JSON.stringify(healthMechanism)}`);
   report.checks.push("mecanismo de saúde integrado e interativo");
   await screenshot(session, "mobile-health-mechanism-final.png");
 
@@ -429,11 +446,14 @@ try {
     document.querySelector('.footer-wordmark').scrollIntoView({ block: 'center' });
     return new Promise((resolve) => setTimeout(() => resolve({
       letters: document.querySelectorAll('.footer-letter').length,
-      visible: getComputedStyle(document.querySelector('.footer-letter')).opacity
+      visible: getComputedStyle(document.querySelector('.footer-letter')).opacity,
+      creditText: document.querySelector('.developer-credit')?.textContent.trim(),
+      creditHref: document.querySelector('.developer-credit')?.href,
+      creditBetween: document.querySelector('.footer-bottom')?.children[1]?.classList.contains('developer-credit')
     }), 1450));
   })()`);
-  assert(footer.letters === 13 && Number(footer.visible) > 0.9, "O nome animado do rodapé não ficou visível.");
-  report.checks.push("wordmark do rodapé alinhado entre linhas");
+  assert(footer.letters === 13 && Number(footer.visible) > 0.9 && footer.creditText === "Desenvolvido por Lucas Cabral" && footer.creditHref.startsWith("https://wa.me/5511960573657") && footer.creditBetween, `O rodapé ou o crédito de desenvolvimento não ficaram corretos: ${JSON.stringify(footer)}`);
+  report.checks.push("wordmark e crédito discreto do rodapé alinhados");
   await screenshot(session, "mobile-footer-final-2026.png");
 
   await setViewport(session, 320, 760);
@@ -484,10 +504,13 @@ try {
       return rect.right > document.documentElement.clientWidth + 1 || rect.left < -1;
     }).slice(0, 12).map((element) => ({ tag: element.tagName, className: element.className, left: Math.round(element.getBoundingClientRect().left), right: Math.round(element.getBoundingClientRect().right) })),
     heroHeight: Math.round(document.querySelector('.opening').getBoundingClientRect().height),
-    h1Count: document.querySelectorAll('h1').length
+    h1Count: document.querySelectorAll('h1').length,
+    initialHeaderBackground: getComputedStyle(document.querySelector('[data-header] .header-inner')).backgroundColor,
+    initialHeaderLinkColor: getComputedStyle(document.querySelector('[data-header] .nav-links a')).color,
+    initialHeaderSurface: document.querySelector('[data-header]').dataset.surface
   }))()`);
   report.desktop = desktop;
-  assert(desktop.width >= 1400 && !desktop.overflow && desktop.h1Count === 1, "O layout desktop apresentou overflow ou estrutura incorreta.");
+  assert(desktop.width >= 1400 && !desktop.overflow && desktop.h1Count === 1 && desktop.initialHeaderBackground === "rgba(0, 0, 0, 0)" && desktop.initialHeaderLinkColor === "rgb(255, 255, 255)" && desktop.initialHeaderSurface === "dark", `O layout desktop ou o cabeçalho inicial apresentaram problemas: ${JSON.stringify(desktop)}`);
   report.checks.push("desktop sem overflow horizontal");
 
   const desktopRefinements = await evaluate(session, `(() => {
@@ -495,6 +518,7 @@ try {
     return new Promise((resolve) => setTimeout(() => {
       const header = document.querySelector('[data-header] .header-inner');
       const headerRect = header.getBoundingClientRect();
+      const outerHeader = document.querySelector('[data-header]');
       const autoPhoto = document.querySelector('.autoshopping-photo img');
       const c6 = document.querySelector('.partner-card-c6 img');
       resolve({
@@ -503,6 +527,8 @@ try {
         headerWidth: Math.round(headerRect.width),
         headerRadius: parseFloat(getComputedStyle(header).borderTopLeftRadius),
         headerBackground: getComputedStyle(header).backgroundColor,
+        headerSurface: outerHeader.dataset.surface,
+        headerLinkColor: getComputedStyle(outerHeader.querySelector('.nav-links a')).color,
         autoPhotoLoaded: autoPhoto.complete && autoPhoto.naturalWidth > 800,
         autoPhotoRatio: autoPhoto.naturalWidth / Math.max(1, autoPhoto.naturalHeight),
         c6Filter: getComputedStyle(c6).filter,
@@ -510,7 +536,7 @@ try {
       });
     }, 500));
   })()`);
-  assert(desktopRefinements.headerTop >= 9 && desktopRefinements.headerLeft >= 19 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25 && desktopRefinements.headerBackground.includes("87, 86, 82"), "O cabeçalho desktop não ficou largo, escuro e flutuante após o scroll.");
+  assert(desktopRefinements.headerTop >= 9 && desktopRefinements.headerLeft >= 19 && desktopRefinements.headerWidth >= desktop.width * 0.94 && desktopRefinements.headerRadius > 25 && desktopRefinements.headerBackground === "rgba(28, 29, 28, 0.62)" && desktopRefinements.headerSurface === "dark" && desktopRefinements.headerLinkColor === "rgb(255, 255, 255)", `O cabeçalho desktop não ficou largo, translúcido e legível após o scroll: ${JSON.stringify(desktopRefinements)}`);
   assert(desktopRefinements.autoPhotoLoaded && desktopRefinements.autoPhotoRatio > 2.2, "A foto editorial do AutoShopping não foi carregada.");
   assert(desktopRefinements.c6Filter.includes("brightness(0)") && desktopRefinements.c6Opacity === "1", "O logo C6 Seg continua sem contraste.");
   report.checks.push("foto do AutoShopping, C6 Seg e cabeçalho desktop escuro refinados");
@@ -548,6 +574,24 @@ try {
 
   await evaluate(session, "document.querySelector('.partners').scrollIntoView({ block: 'center' })");
   await sleep(900);
+  const partnerBrands = await evaluate(session, `(() => {
+    const section = document.querySelector('.partners');
+    const cards = Array.from(section.querySelectorAll('.partner-card'));
+    const boxes = cards.map((card) => {
+      const rect = card.querySelector('img').getBoundingClientRect();
+      return [Math.round(rect.width), Math.round(rect.height)];
+    });
+    return {
+      title: section.querySelector('h2')?.textContent.trim(),
+      hasDescription: section.querySelector('.partners-heading p')?.textContent.trim().length > 20,
+      links: section.querySelectorAll('.partner-card[href], a.partner-card').length,
+      cards: cards.length,
+      uniform: boxes.every(([width, height]) => width === boxes[0][0] && height === boxes[0][1]),
+      firstBox: boxes[0]
+    };
+  })()`);
+  assert(partnerBrands.title === "Seguradoras parceiras" && partnerBrands.hasDescription && partnerBrands.links === 0 && partnerBrands.cards === 12 && partnerBrands.uniform && partnerBrands.firstBox[0] === 156 && partnerBrands.firstBox[1] === 56, `As marcas não ficaram uniformes ou ainda possuem links: ${JSON.stringify(partnerBrands)}`);
+  report.checks.push("logos parceiros uniformes e sem links externos");
   await screenshot(session, "desktop-partners-final.png");
 
   const desktopHealth = await evaluate(session, `(async () => {
@@ -594,18 +638,48 @@ try {
       const copy = section.querySelector('.about-owner').getBoundingClientRect();
       const photo = section.querySelector('.about-founder-photo img');
       const photoRect = photo.getBoundingClientRect();
+      const header = document.querySelector('[data-header]');
+      const headerInner = header.querySelector('.header-inner');
       resolve({
         copyLeft: Math.round(copy.left),
         photoLeft: Math.round(photoRect.left),
         naturalWidth: photo.naturalWidth,
         naturalHeight: photo.naturalHeight,
-        renderedRatio: photoRect.width / photoRect.height
+        renderedRatio: photoRect.width / photoRect.height,
+        title: section.querySelector('h2')?.textContent.trim(),
+        titleSize: parseFloat(getComputedStyle(section.querySelector('h2')).fontSize),
+        headerSurface: header.dataset.surface,
+        headerBackground: getComputedStyle(headerInner).backgroundColor,
+        headerLinkColor: getComputedStyle(header.querySelector('.nav-links a')).color
       });
     }, 500));
   })()`);
-  assert(desktopAbout.copyLeft < desktopAbout.photoLeft && desktopAbout.naturalWidth === 853 && desktopAbout.naturalHeight === 1280 && Math.abs(desktopAbout.renderedRatio - 853 / 1280) < 0.01, "O retrato original do Caio não ficou inteiro à direita no desktop.");
+  assert(desktopAbout.copyLeft < desktopAbout.photoLeft && desktopAbout.naturalWidth === 853 && desktopAbout.naturalHeight === 1280 && Math.abs(desktopAbout.renderedRatio - 853 / 1280) < 0.01 && desktopAbout.title === "Sobre nós" && desktopAbout.titleSize <= 61 && desktopAbout.headerSurface === "light" && desktopAbout.headerBackground === "rgba(255, 255, 255, 0.68)" && desktopAbout.headerLinkColor === "rgb(17, 17, 17)", `A seção Sobre nós ou o cabeçalho adaptativo não ficaram corretos: ${JSON.stringify(desktopAbout)}`);
   report.checks.push("retrato original do Caio inteiro à direita no desktop");
   await screenshot(session, "desktop-about-caio-final.png");
+
+  const desktopContact = await evaluate(session, `(() => {
+    const section = document.querySelector('#contato');
+    section.scrollIntoView({ block: 'start' });
+    window.scrollBy(0, 140);
+    return new Promise((resolve) => setTimeout(() => {
+      const title = section.querySelector('h2');
+      const copy = section.querySelector('.contact-copy > p');
+      const header = document.querySelector('[data-header]');
+      resolve({
+        title: title.textContent.trim(),
+        titleSize: parseFloat(getComputedStyle(title).fontSize),
+        titleColor: getComputedStyle(title).color,
+        copySize: parseFloat(getComputedStyle(copy).fontSize),
+        headerSurface: header.dataset.surface,
+        headerBackground: getComputedStyle(header.querySelector('.header-inner')).backgroundColor,
+        headerLinkColor: getComputedStyle(header.querySelector('.nav-links a')).color
+      });
+    }, 450));
+  })()`);
+  assert(desktopContact.title === "Atendimento" && desktopContact.titleSize <= 50 && desktopContact.titleColor === "rgb(255, 255, 255)" && desktopContact.copySize < desktopContact.titleSize && desktopContact.headerSurface === "dark" && desktopContact.headerBackground === "rgba(28, 29, 28, 0.62)" && desktopContact.headerLinkColor === "rgb(255, 255, 255)", `A hierarquia de contato ou o contraste do cabeçalho não ficaram corretos: ${JSON.stringify(desktopContact)}`);
+  report.checks.push("títulos de seção menores com apoio textual e contraste contextual");
+  await screenshot(session, "desktop-contact-final.png");
 
   assert(report.consoleErrors.length === 0, `Erros de console: ${report.consoleErrors.join(" | ")}`);
   assert(report.failedLocalResources.length === 0, `Recursos locais com falha: ${report.failedLocalResources.join(" | ")}`);
