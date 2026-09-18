@@ -570,5 +570,40 @@
     <noscript><div class="noscript-note">Ative o JavaScript para usar o atendimento. Você ainda pode navegar pelas informações do site.</div></noscript>
     <script src="site-config.js?v=20260914f"></script>
     <script src="app.js?v=20260914f" defer></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const formLead = document.getElementById('lead-form');
+        if (formLead) {
+          formLead.addEventListener('submit', function(event) {
+            if (!formLead.checkValidity()) return;
+            event.preventDefault();
+
+            const nome = document.getElementById('lead-name').value;
+            const interesse = document.getElementById('lead-interest').value;
+            const perfil = document.querySelector('input[name="profile"]:checked')?.value || 'Não informado';
+            const status = document.getElementById('lead-status').value;
+            const horario = document.getElementById('lead-best-time').value;
+            const mensagemExtra = document.getElementById('lead-message').value;
+
+            let texto = `Olá! O meu nome é *${nome}* e venho através do site da G.E. Corretora!\n\n`;
+            texto += `*Interesse:* ${interesse}\n`;
+            texto += `*Para quem:* ${perfil}\n`;
+            texto += `*Já possui seguro/plano?* ${status}\n`;
+            
+            if (horario && horario !== "") {
+              texto += `*Melhor horário para contacto:* ${horario}\n`;
+            }
+            if (mensagemExtra) {
+              texto += `\n*Observação:* ${mensagemExtra}`;
+            }
+
+            const telefoneCorretora = "5511993505685";
+            const url = `https://wa.me/${telefoneCorretora}?text=${encodeURIComponent(texto)}`;
+
+            window.open(url, '_blank');
+          });
+        }
+      });
+    </script>
   </body>
 </html>
