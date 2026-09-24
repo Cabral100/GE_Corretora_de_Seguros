@@ -3,7 +3,7 @@
 
   const config = Object.freeze({
     leadEndpoint: "/api/lead",
-    whatsappNumber: "5511993135111",
+    whatsappNumber: "5511993505685",
     popupDelayMs: 900,
     autoOpenPopup: true,
     analyticsEventName: "generate_lead",

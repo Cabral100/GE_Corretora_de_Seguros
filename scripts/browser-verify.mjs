@@ -276,7 +276,7 @@ try {
     const textarea = form.elements.message.getBoundingClientRect();
     return {
       removedCopy: !document.body.innerText.includes('Formulário rápido') && !document.body.innerText.includes('Uma única etapa') && !document.body.innerText.includes('Vamos começar'),
-      opensWhatsapp: String(window.__whatsappTestUrl || '').startsWith('https://wa.me/5511993135111'),
+      opensWhatsapp: String(window.__whatsappTestUrl || '').startsWith('https://wa.me/5511993505685'),
       preparedMessage: decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Cliente Teste') && decodeURIComponent(String(window.__whatsappTestUrl || '')).includes('Quero cobertura completa'),
       fullWidth: button.width >= form.getBoundingClientRect().width - 20,
       afterTextarea: button.top > textarea.bottom,
